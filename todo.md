@@ -1,0 +1,59 @@
+-   [ ] Front-end
+
+    -   [x] Splash Page
+    -   [x] Intro pages (slides)
+    -   [x] Login Page with mobile number
+    -   [ ] basic details like name, roll_number, branch and year, and photo(optional) if not already in database
+    -   [ ] Navigation bar
+        -   [ ] Home
+            -   [ ] Top bar
+                -   [ ] Sponsor ads
+                -   [ ] Profile
+                    -   [ ] User Details
+                    -   [ ] Contribute to community(to integrate later)
+                    -   [ ] verify yourself
+                    -   [ ] Setting
+                        -   [ ] Mobile update
+                        -   [ ] Name Update
+                        -   [ ] Email Update
+                        -   [ ] Class Update
+                    -   [ ] About (info about app and us)
+            -   [ ] Ongoing classes
+                -   [ ] Mark Attendance
+                -   [ ] with number of people attended class
+            -   [ ] Upcomming classes
+                -   [ ] Mark going or not going
+                -   [ ] with number of people will be attending class
+            -   [ ] Ended Classes
+                -   [ ] Mark Attendance
+                -   [ ] with number of people attended class
+        -   [ ] Time Table (whole)
+            -   [ ] My timetable
+            -   [ ] Whole timetable
+        -   [ ] Announcements
+            -   [ ] School Announcement
+            -   [ ] class
+            -   [ ] University
+        -   [ ] My Classes(All Classes)
+            -   [ ] open class details
+                -   [ ] my class
+                    -   [ ] class time
+                    -   [ ] total number of students in class
+                    -   [ ] info if any
+                -   [ ] Assignments
+                -   [ ] Chat (not now)
+                -   [ ] Progress
+                    -   [ ] number of classes attendend with percentage
+        -   [ ] Polls
+            -   [ ] Ongoing polls
+            -   [ ] Create polls (only for CR or verified profiles)
+            -   [ ] verify yourself (only if profile not verified)
+            -   [ ] Ended polls (stoge in localstore)
+
+-   [ ] APIs
+    -   [ ] login api
+        -   [ ] verify token from firebase mobile auth
+        -   [ ] return if user data already exist or not
+    -   [ ] data insert api
+    -   [ ] return all up comming class data
+    -   [ ] fetch user details
