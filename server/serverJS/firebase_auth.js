@@ -25,8 +25,9 @@ async function auth_firebase(idToken) {
         if (!user) {
             data = {
                 uid: res.uid,
-                fname: false,
-                lname: false,
+                name: false,
+                dob: false,
+                gender: false,
                 roll_number: false,
                 mobile: res.phone_number,
                 username: res.phone_number.slice(1),
@@ -58,23 +59,6 @@ async function auth_firebase(idToken) {
         }
     }
 }
-async function auth(token) {
-    let data = decodeJSON(token)
-    let user = await users.findOne({
-        $and: [
-            { uid: data.uid },
-            { password: data.password },
-            { phone_number: data.phone_number },
-        ],
-    })
-    if (user)
-        return {
-            auth: true,
-        }
-    return { auth: false }
-}
-
 module.exports = {
     auth_firebase,
-    auth,
 }
