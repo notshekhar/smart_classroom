@@ -7,6 +7,8 @@ const {
     getBranches,
     infoHandle,
     AuthMiddlewareQuery,
+    AuthMiddlewareBody,
+    updateDetailsHandle,
 } = require("../student_handles/other")
 
 const router = Router()
@@ -16,5 +18,6 @@ router.get("/auth", authHandle)
 router.get("/allSchools", getAllSchools)
 router.get("/getBranches", getBranches)
 router.get("/getinfo", AuthMiddlewareQuery, infoHandle)
+router.post("/updateDetails", AuthMiddlewareBody, updateDetailsHandle)
 
 module.exports = router

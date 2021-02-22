@@ -63,10 +63,19 @@ async function infoHandle(req, res, next) {
     }
 }
 
+async function updateDetailsHandle(req, res, next) {
+    try {
+        let { data, token } = req.body
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     AuthMiddlewareQuery,
     AuthMiddlewareBody,
     getAllSchools,
     getBranches,
     infoHandle,
+    updateDetailsHandle,
 }

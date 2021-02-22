@@ -71,7 +71,18 @@ const schools = ref()
 
 const branches = ref()
 
-function submitDetails() {}
+function submitDetails() {
+    try {
+        if (name.value.length == 0) throw new Error("Enter your name")
+        if (roll_number.value.length == 0)
+            throw new Error("Enter your roll number")
+        if (school.value == "") throw new Error("Select your School")
+        if (branch.value == "") throw new Error("Select your Branch")
+
+    } catch (err) {
+        alert(err.message)
+    }
+}
 
 async function logSchool() {
     console.log(school.value)
