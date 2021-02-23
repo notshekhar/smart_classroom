@@ -3,7 +3,7 @@
     -   [x] Splash Page
     -   [x] Intro pages (slides)
     -   [x] Login Page with mobile number
-    -   [ ] basic details like name, roll_number, branch and year, and photo(optional) if not already in database
+    -   [x] basic details like name, roll_number, branch and year, and photo(optional) if not already in database
     -   [ ] Navigation bar
         -   [ ] Home
             -   [ ] Top bar

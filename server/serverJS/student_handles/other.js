@@ -65,7 +65,11 @@ async function infoHandle(req, res, next) {
 
 async function updateDetailsHandle(req, res, next) {
     try {
-        let { data, token } = req.body
+        let { data, uid, photo_url } = req.body
+        console.log(data)
+        let update = await users.findOneAndUpdate({ uid }, { $set: data })
+        if (!update) throw new Error("Somethig went wrong")
+        res.json({ updated: true })
     } catch (err) {
         next(err)
     }

@@ -1,20 +1,23 @@
 <template>
     <div class="home">
         <router-view></router-view>
-        <router-link to="/profile">Profile</router-link>
-        <img alt="Vue logo" src="../../assets/logo.png" />
-        <HelloWorld msg="Welcome to Your Vue.js App" />
+        <!-- <router-link to="/profile">Profile</router-link> -->
+        <Footer />
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue"
+import Footer from "@/components/Footer.vue"
+import { onMounted } from "vue"
 
 export default {
     setup() {
+        onMounted(() => {
+            document.title = "Timetable | Home"
+        })
         return {
-            HelloWorld,
+            Footer,
         }
     },
 }

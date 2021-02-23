@@ -20,7 +20,7 @@
 <script>
 import { onMounted } from "vue"
 import { useRouter } from "vue-router"
-import { useStore } from "../../js/store"
+import { useStore } from "@/js/store"
 
 const [first, setFirst] = useStore("first-time")
 

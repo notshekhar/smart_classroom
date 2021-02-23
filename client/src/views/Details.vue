@@ -55,8 +55,9 @@
 
 <script>
 import { onMounted, ref } from "vue"
-import { useCookie } from "../js/store"
-import { api_url } from "../js/configs/config"
+import { useCookie } from "@/js/store"
+import { api_url } from "@/js/configs/config"
+import { useRouter } from "vue-router"
 
 const [uid] = useCookie("uid")
 const [token] = useCookie("token")
@@ -70,19 +71,6 @@ const branch = ref("")
 const schools = ref()
 
 const branches = ref()
-
-function submitDetails() {
-    try {
-        if (name.value.length == 0) throw new Error("Enter your name")
-        if (roll_number.value.length == 0)
-            throw new Error("Enter your roll number")
-        if (school.value == "") throw new Error("Select your School")
-        if (branch.value == "") throw new Error("Select your Branch")
-
-    } catch (err) {
-        alert(err.message)
-    }
-}
 
 async function logSchool() {
     console.log(school.value)
@@ -120,6 +108,13 @@ async function getInfo() {
         let schools_data = await resSchools.json()
         schools.value = schools_data
 
+        let branches_res = await fetch(
+            `${api_url}/getBranches?school_id=${school.value}`
+        )
+        if (branches_res.status != 200) throw new Error("Something Went wrong")
+        let branches_data = await branches_res.json()
+        branches.value = branches_data
+
         loading.value = false
     } catch (err) {
         alert(err.message)
@@ -130,6 +125,42 @@ async function getInfo() {
 
 export default {
     setup() {
+        const router = useRouter()
+
+        async function submitDetails() {
+            try {
+                if (name.value.length == 0) throw new Error("Enter your name")
+                if (roll_number.value.length == 0)
+                    throw new Error("Enter your roll number")
+                if (school.value == "") throw new Error("Select your School")
+                if (branch.value == "") throw new Error("Select your Branch")
+                let data = {
+                    name: name.value,
+                    school_id: school.value,
+                    branch_id: branch.value,
+                    roll_number: roll_number.value,
+                }
+                let req = await fetch(`${api_url}/updateDetails`, {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        data,
+                        token: token(),
+                        uid: uid(),
+                        photo_url: "",
+                    }),
+                })
+                let res_data = await req.json()
+                if (!res_data.updated) throw new Error(data.message)
+                console.log(res_data)
+                router.push({ name: "Home" })
+            } catch (err) {
+                alert(err.message)
+            }
+        }
+
         onMounted(() => {
             document.title = "Enter Your Details"
             getInfo()
@@ -145,6 +176,7 @@ export default {
             logSchool,
             getInfo,
             submitDetails,
+            router,
         }
     },
 }

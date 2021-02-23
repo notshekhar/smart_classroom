@@ -13,6 +13,9 @@ const {
 
 const router = Router()
 
+router.get("/", (req, res) => {
+    res.send(req.headers)
+})
 router.get("/login", loginHandle)
 router.get("/auth", authHandle)
 router.get("/allSchools", getAllSchools)

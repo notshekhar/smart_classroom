@@ -71,11 +71,11 @@ import { onMounted, ref } from "vue"
 
 import firebase from "firebase/app"
 import "firebase/auth"
-import firebaseConfig from "../../js/configs/firebase_configs"
+import firebaseConfig from "@/js/configs/firebase_configs"
 
-import { api_url } from "../../js/configs/config"
+import { api_url } from "@/js/configs/config"
 import { useRouter } from "vue-router"
-import { useCookie } from "../../js/store"
+import { useCookie } from "@/js/store"
 
 const [token, setToken] = useCookie("token")
 const [uid, setUid] = useCookie("uid")
