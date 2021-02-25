@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Home from "../views/home/Home.vue"
 import NotFound from "../views/NotFound.vue"
 import Details from "../views/Details.vue"
-import FirstTime from "../views/home/FirstTime.vue"
+import Main from "../views/home/Main.vue"
 import GetStarted from "../views/getStarted/getStarted.vue"
 import GetStarted2 from "../views/getStarted/getStarted2.vue"
 import Login from "../views/auth/Login.vue"
@@ -43,9 +43,30 @@ const routes = [
         },
         children: [
             {
-                path: "/profile",
-                name: "first-time",
-                component: FirstTime,
+                path: "/",
+                name: "home",
+                component: Main,
+            },
+            {
+                path: "/timetable",
+                name: "timetable",
+                component: Main,
+            },
+
+            {
+                path: "/announcement",
+                name: "announcement",
+                component: Main,
+            },
+            {
+                path: "/myclasses",
+                name: "myclasses",
+                component: Main,
+            },
+            {
+                path: "/polls",
+                name: "polls",
+                component: Main,
             },
         ],
     },

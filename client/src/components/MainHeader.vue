@@ -1,7 +1,11 @@
 <template>
-    <div>Hello welcome, to profile</div>
+    <div>
+        header
+    </div>
 </template>
 
 <script>
 export default {}
 </script>
+
+<style></style>

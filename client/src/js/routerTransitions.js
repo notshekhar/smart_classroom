@@ -21,5 +21,12 @@ export function handleRouterTransisitions(router) {
             sendTransition("animate__backOutLeft", "animate__backInRight")
         }
         backINOUT("getStarted2", "getStarted", "login")
+
+        //home page active tabs
+        function select_tab(tab) {
+            to.meta.selected = tab
+        }
+        //handeling which tab to select in navigation bar
+        select_tab(to.name)
     })
 }
