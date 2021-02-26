@@ -1,6 +1,7 @@
 <template>
-    <div>
-        header
+    <div class="home_header">
+        <div class="logo"></div>
+        <div class="profile"></div>
     </div>
 </template>
 
@@ -8,4 +9,16 @@
 export default {}
 </script>
 
-<style></style>
+<style>
+.home_header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 55px;
+    background-color: white;
+    /* box-shadow: 0 0px 1px 0px rgb(36 136 246 / 50%); */
+    border: solid;
+    z-index: 10;
+}
+</style>

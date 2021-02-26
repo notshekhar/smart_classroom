@@ -6,9 +6,13 @@ const db = monk(URI)
 const users = db.get("users")
 const schools = db.get("schools")
 const branches = db.get("branches")
+const timetable = db.get("timetable")
+const branch_classes = db.get("branch_classes")
 
 module.exports = {
     users,
     schools,
     branches,
+    timetable,
+    branch_classes,
 }

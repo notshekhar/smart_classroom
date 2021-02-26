@@ -1,4 +1,4 @@
-const { schools, users, branches } = require("../db")
+const { schools, users, branches, timetable, branch_classes } = require("../db")
 
 //auth
 const { auth } = require("../auth")
@@ -75,6 +75,25 @@ async function updateDetailsHandle(req, res, next) {
     }
 }
 
+async function getTimeTable(req, res, next) {
+    try {
+        let { uid } = req.query
+        let user = await users.findOne({ uid })
+        let branch_c = await branch_classes.findOne({
+            branch_id: user.branch_id,
+        })
+        let tt = await timetable.findOne({
+            branch_id: user.branch_id,
+        })
+        res.status(200).json({
+            timetable: tt.timetable,
+            branch_classes: branch_c.classes,
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     AuthMiddlewareQuery,
     AuthMiddlewareBody,
@@ -82,4 +101,5 @@ module.exports = {
     getBranches,
     infoHandle,
     updateDetailsHandle,
+    getTimeTable,
 }
