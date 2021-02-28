@@ -9,6 +9,14 @@ const branches = db.get("branches")
 const timetable = db.get("timetable")
 const classes = db.get("classes")
 const branch_classes = db.get("branch_classes")
+const attendance = db.get("attendance")
+
+// async function init() {
+//     // let i = await attendance.insert({ date: new Date().toDateString() })
+//     let f = await attendance.findOne({ date: new Date().toDateString() })
+//     console.log(f)
+// }
+// init()
 
 module.exports = {
     users,
@@ -17,4 +25,5 @@ module.exports = {
     branches,
     timetable,
     branch_classes,
+    attendance,
 }
