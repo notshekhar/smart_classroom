@@ -1,6 +1,7 @@
 {
     "branch_id": "603364e8760399197474b877",
     "timetable": [
+        false,
         [
             {
                 "start": "10:00",
@@ -18,28 +19,28 @@
             },
             {
                 "start": "12:00",
-                "end": "01:00",
+                "end": "13:00",
                 "nClasses": 1,
                 "subjectCode": "IT302",
                 "place": "IL205"
             },
             {
-                "start": "02:00",
-                "end": "03:00",
+                "start": "14:00",
+                "end": "15:00",
                 "nClasses": 1,
                 "subjectCode": "IT306",
                 "place": "IL205"
             },
             {
-                "start": "03:00",
-                "end": "04:00",
+                "start": "15:00",
+                "end": "16:00",
                 "nClasses": 1,
                 "subjectCode": "IT318",
                 "place": "IL205"
             },
             {
-                "start": "04:00",
-                "end": "05:00",
+                "start": "16:00",
+                "end": "17:00",
                 "group": 1,
                 "nClasses": 1,
                 "subjectCode": "IT318",
@@ -63,28 +64,28 @@
             },
             {
                 "start": "12:00",
-                "end": "01:00",
+                "end": "13:00",
                 "nClasses": 1,
                 "subjectCode": "IT302",
                 "place": "IL205"
             },
             {
-                "start": "02:00",
-                "end": "03:00",
+                "start": "14:00",
+                "end": "15:00",
                 "nClasses": 1,
                 "subjectCode": "IT306",
                 "place": "IL205"
             },
             {
-                "start": "03:00",
-                "end": "04:00",
+                "start": "15:00",
+                "end": "16:00",
                 "nClasses": 1,
                 "subjectCode": "IT318",
                 "place": "IL205"
             },
             {
-                "start": "04:00",
-                "end": "05:00",
+                "start": "16:00",
+                "end": "17:00",
                 "group": 2,
                 "nClasses": 1,
                 "subjectCode": "IT318",
@@ -108,28 +109,28 @@
             },
             {
                 "start": "12:00",
-                "end": "01:00",
+                "end": "13:00",
                 "nClasses": 1,
                 "subjectCode": "IT302",
                 "place": "IL205"
             },
             {
-                "start": "02:00",
-                "end": "03:00",
+                "start": "14:00",
+                "end": "15:00",
                 "nClasses": 1,
                 "subjectCode": "IT306",
                 "place": "IL205"
             },
             {
-                "start": "03:00",
-                "end": "04:00",
+                "start": "15:00",
+                "end": "16:00",
                 "nClasses": 1,
                 "subjectCode": "IT318",
                 "place": "IL205"
             },
             {
-                "start": "04:00",
-                "end": "05:00",
+                "start": "16:00",
+                "end": "17:00",
                 "nClasses": 1,
                 "subjectCode": "IT314",
                 "place": "IL102"
@@ -145,19 +146,28 @@
             },
             {
                 "start": "11:00",
-                "end": "02:00",
+                "end": "14:00",
                 "group": 1,
                 "nClasses": 1,
                 "subjectCode": "IT382",
                 "place": "VP114"
             },
             {
-                "start": "02:00",
-                "end": "05:00",
+                "start": "14:00",
+                "end": "17:00",
                 "nClasses": 2,
-                "group": [1, 2],
-                "subjectCode": ["IT384", "IT386"],
-                "place": ["IL205", "IL205"]
+                "classes": [
+                    {
+                        "group": 1,
+                        "subjectCode": "IT384",
+                        "place": "IL205"
+                    },
+                    {
+                        "group": 2,
+                        "subjectCode": "IT386",
+                        "place": "IL205"
+                    }
+                ]
             }
         ],
         [
@@ -170,20 +180,30 @@
             },
             {
                 "start": "11:00",
-                "end": "02:00",
+                "end": "14:00",
                 "group": 2,
                 "nClasses": 1,
                 "subjectCode": "IT382",
                 "place": "VP114"
             },
             {
-                "start": "02:00",
-                "end": "05:00",
+                "start": "14:00",
+                "end": "17:00",
                 "nClasses": 2,
-                "group": [1, 2],
-                "subjectCode": ["IT386", "IT384"],
-                "place": ["IL102", "IL205"]
+                "classes": [
+                    {
+                        "group": 1,
+                        "subjectCode": "IT386",
+                        "place": "IL102"
+                    },
+                    {
+                        "group": 2,
+                        "subjectCode": "IT384",
+                        "place": "IL205"
+                    }
+                ]
             }
-        ]
+        ],
+        false
     ]
 }

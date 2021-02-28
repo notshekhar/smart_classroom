@@ -1,4 +1,11 @@
-const { schools, users, branches, timetable, branch_classes } = require("../db")
+const {
+    schools,
+    users,
+    branches,
+    timetable,
+    branch_classes,
+    classes,
+} = require("../db")
 
 //auth
 const { auth } = require("../auth")
@@ -85,15 +92,38 @@ async function getTimeTable(req, res, next) {
         let tt = await timetable.findOne({
             branch_id: user.branch_id,
         })
+        let subjectCodes = branch_c.classes.map((e) => e.subjectCode)
+        let s = await classes.find({
+            subjectCode: { $in: subjectCodes },
+        })
+        let subjects = {}
+        s.forEach((e) => {
+            let sd = branch_c.classes.filter(
+                (c) => c.subjectCode == e.subjectCode
+            )[0]
+            subjects[sd.subjectCode] = {
+                name: e.name,
+                teacherName: sd.teacherName,
+            }
+        })
+
         res.status(200).json({
             timetable: tt.timetable,
-            branch_classes: branch_c.classes,
+            subjects,
         })
     } catch (err) {
         next(err)
     }
 }
-
+async function getBranchId(req, res, next) {
+    try {
+        let { uid } = req.query
+        let user = await users.findOne({ uid }, "branch_id")
+        res.status(200).json(user)
+    } catch (err) {
+        next(err)
+    }
+}
 module.exports = {
     AuthMiddlewareQuery,
     AuthMiddlewareBody,
@@ -102,4 +132,5 @@ module.exports = {
     infoHandle,
     updateDetailsHandle,
     getTimeTable,
+    getBranchId,
 }

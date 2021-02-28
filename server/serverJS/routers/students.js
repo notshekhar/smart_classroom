@@ -10,6 +10,7 @@ const {
     AuthMiddlewareBody,
     updateDetailsHandle,
     getTimeTable,
+    getBranchId,
 } = require("../student_handles/other")
 
 const router = Router()
@@ -23,6 +24,7 @@ router.get("/allSchools", getAllSchools)
 router.get("/getBranches", getBranches)
 router.get("/getinfo", AuthMiddlewareQuery, infoHandle)
 router.get("/getTimetable", getTimeTable)
+router.get("/getBranchId", getBranchId)
 //post req
 router.post("/updateDetails", AuthMiddlewareBody, updateDetailsHandle)
 

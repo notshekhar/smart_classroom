@@ -8,5 +8,9 @@ const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`listening to port -> ${server.address().port}`)
 })
 
-const io = socketio(server)
+const io = socketio(server, {
+    cors: {
+        origin: "*",
+    },
+})
 io.on("connection", socketHandler)

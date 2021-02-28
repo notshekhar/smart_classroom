@@ -18,7 +18,8 @@ export default {}
     height: 55px;
     background-color: white;
     /* box-shadow: 0 0px 1px 0px rgb(36 136 246 / 50%); */
-    border: solid;
+    border-bottom: solid 1.5px;
+    border-color: rgb(224, 224, 224);
     z-index: 10;
 }
 </style>

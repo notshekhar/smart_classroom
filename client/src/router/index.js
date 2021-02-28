@@ -27,16 +27,20 @@ const routes = [
                 next({ name: "getStarted" })
             } else {
                 //[]TODO: check if not logged in redirect to login page
-                let res = await fetch(`${api_url}/auth?token=${token()}`)
-                if (res.status == 403) next({ name: "login" })
-                let data = await res.json()
-                if (data.auth) {
-                    if (data.detail_page) {
-                        next({ name: "details" })
+                try {
+                    let res = await fetch(`${api_url}/auth?token=${token()}`)
+                    if (res.status == 403) next({ name: "login" })
+                    let data = await res.json()
+                    if (data.auth) {
+                        if (data.detail_page) {
+                            next({ name: "details" })
+                        } else {
+                            next()
+                        }
                     } else {
-                        next()
+                        next({ name: "login" })
                     }
-                } else {
+                } catch (err) {
                     next({ name: "login" })
                 }
             }
@@ -109,11 +113,15 @@ const routes = [
                 next({ name: "getStarted" })
             } else {
                 //if already loggedIn redirect to home page
-                let res = await fetch(`${api_url}/auth?token=${token()}`)
-                let data = await res.json()
-                if (data.auth) {
-                    next({ name: "Home" })
-                } else {
+                try {
+                    let res = await fetch(`${api_url}/auth?token=${token()}`)
+                    let data = await res.json()
+                    if (data.auth) {
+                        next({ name: "Home" })
+                    } else {
+                        next()
+                    }
+                } catch (err) {
                     next()
                 }
             }
@@ -136,6 +144,7 @@ const routes = [
                 if (data.auth & !data.detail_page) {
                     next({ name: "Home" })
                 } else {
+                    // show offline page
                     next()
                 }
             }

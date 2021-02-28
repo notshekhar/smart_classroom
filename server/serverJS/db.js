@@ -7,11 +7,13 @@ const users = db.get("users")
 const schools = db.get("schools")
 const branches = db.get("branches")
 const timetable = db.get("timetable")
+const classes = db.get("classes")
 const branch_classes = db.get("branch_classes")
 
 module.exports = {
     users,
     schools,
+    classes,
     branches,
     timetable,
     branch_classes,
