@@ -5,6 +5,7 @@ const {
     timetable,
     branch_classes,
     classes,
+    attendance,
 } = require("../db")
 
 //auth
@@ -96,6 +97,24 @@ async function getTimeTable(req, res, next) {
         let s = await classes.find({
             subjectCode: { $in: subjectCodes },
         })
+        let attending_people = await attendance.find({
+            $and: [
+                {
+                    subjectCode: { $in: subjectCodes },
+                },
+                { date: new Date().toDateString() },
+            ],
+        })
+        let attended_classes = await attendance.find({
+            $and: [
+                {
+                    subjectCode: { $in: subjectCodes },
+                },
+                { date: new Date().toDateString() },
+                { uid: uid },
+            ],
+        })
+        // console.log(attending_people)
         let subjects = {}
         s.forEach((e) => {
             let sd = branch_c.classes.filter(
@@ -104,9 +123,25 @@ async function getTimeTable(req, res, next) {
             subjects[sd.subjectCode] = {
                 name: e.name,
                 teacherName: sd.teacherName,
+                people: false,
             }
         })
-
+        //classes attended by the user
+        attended_classes.forEach((a) => {
+            subjects[a.subjectCode].attended = true
+        })
+        //class attended by other users
+        attending_people.forEach((a) => {
+            //TODO: also add details like user_profile and name
+            if (subjects[a.subjectCode] && subjects[a.subjectCode].people) {
+                subjects[a.subjectCode].people.push({
+                    uid: a.uid,
+                    photo_url: false,
+                })
+            } else {
+                subjects[a.subjectCode].people = [{ uid: a.uid }]
+            }
+        })
         res.status(200).json({
             timetable: tt.timetable,
             subjects,

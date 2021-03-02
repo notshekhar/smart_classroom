@@ -11,6 +11,7 @@ import Login from "../views/auth/Login.vue"
 import { useCookie, useStore } from "../js/store"
 import { handleRouterTransisitions } from "../js/routerTransitions"
 import { api_url } from "../js/configs/config"
+import axios from "axios"
 
 const [first] = useStore("first-time")
 const [token] = useCookie("token")
@@ -28,9 +29,12 @@ const routes = [
             } else {
                 //[]TODO: check if not logged in redirect to login page
                 try {
-                    let res = await fetch(`${api_url}/auth?token=${token()}`)
-                    if (res.status == 403) next({ name: "login" })
-                    let data = await res.json()
+                    let { data, status } = await axios.get(`${api_url}/auth`, {
+                        params: {
+                            token: token(),
+                        },
+                    })
+                    if (status == 403) next({ name: "login" })
                     if (data.auth) {
                         if (data.detail_page) {
                             next({ name: "details" })
@@ -114,8 +118,11 @@ const routes = [
             } else {
                 //if already loggedIn redirect to home page
                 try {
-                    let res = await fetch(`${api_url}/auth?token=${token()}`)
-                    let data = await res.json()
+                    let { data } = await axios.get(`${api_url}/auth`, {
+                        params: {
+                            token: token(),
+                        },
+                    })
                     if (data.auth) {
                         next({ name: "Home" })
                     } else {
@@ -138,9 +145,12 @@ const routes = [
                 next({ name: "getStarted" })
             } else {
                 //if already loggedIn redirect to home page
-                let res = await fetch(`${api_url}/auth?token=${token()}`)
-                if (res.status == 403) next({ name: "Home" })
-                let data = await res.json()
+                let { data, status } = await axios.get(`${api_url}/auth`, {
+                    params: {
+                        token: token(),
+                    },
+                })
+                if (status == 403) next({ name: "Home" })
                 if (data.auth & !data.detail_page) {
                     next({ name: "Home" })
                 } else {

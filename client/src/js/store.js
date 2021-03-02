@@ -21,7 +21,8 @@ function t(n, i, r) {
     if (r) {
         d.setTime(d.getTime() + r)
     } else {
-        d.setTime(d.getTime() + 24 * 60 * 60 * 1000)
+        // for testing store cookies for 1 month
+        d.setTime(d.getTime() + 28 * 24 * 60 * 60 * 1000)
     }
     let e = "expires=" + d.toGMTString()
     document.cookie = n + "=" + i + ";" + e + ";path=/"

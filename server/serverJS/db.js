@@ -13,7 +13,11 @@ const attendance = db.get("attendance")
 
 // async function init() {
 //     // let i = await attendance.insert({ date: new Date().toDateString() })
-//     let f = await attendance.findOne({ date: new Date().toDateString() })
+//     let f = await attendance.insert({
+//         subjectCode: "IT302",
+//         uid: "shekhar",
+//         date: new Date().toDateString(),
+//     })
 //     console.log(f)
 // }
 // init()

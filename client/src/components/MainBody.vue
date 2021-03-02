@@ -12,7 +12,10 @@
                     </div>
                 </div>
                 <div v-else>
-                    <div class="card" v-if="onGoing.nClasses == 1">
+                    <div
+                        class="card animate__animated animate__bounceIn"
+                        v-if="onGoing.nClasses == 1"
+                    >
                         <div class="class_name">
                             {{ subjects[onGoing.subjectCode].name }}
                         </div>
@@ -27,7 +30,17 @@
                                 {{ subjects[onGoing.subjectCode].teacherName }}
                             </span>
                         </div>
-                        <div class="buttons">
+                        <div class="people_attending">
+                            <div v-if="subjects[onGoing.subjectCode].people">
+                                {{
+                                    subjects[onGoing.subjectCode].people.length
+                                }}
+                            </div>
+                        </div>
+                        <div
+                            class="buttons"
+                            v-if="!subjects[onGoing.subjectCode].attended"
+                        >
                             <button
                                 class="attending"
                                 @click="markPresent(onGoing.subjectCode)"
@@ -36,11 +49,10 @@
                             </button>
                             <button class="attending">Absent</button>
                         </div>
-                        <div class="people_attending"></div>
                     </div>
                     <div v-else>
                         <div
-                            class="card"
+                            class="card animate__animated animate__bounceIn"
                             v-for="clas in onGoing.classes"
                             :key="clas.subjectCode"
                         >
@@ -62,7 +74,17 @@
                                     {{ subjects[clas.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="buttons">
+                            <div class="people_attending">
+                                <div v-if="subjects[clas.subjectCode].people">
+                                    {{
+                                        subjects[clas.subjectCode].people.length
+                                    }}
+                                </div>
+                            </div>
+                            <div
+                                class="buttons"
+                                v-if="!subjects[clas.subjectCode].attended"
+                            >
                                 <button
                                     class="attending"
                                     @click="markPresent(clas.subjectCode)"
@@ -71,7 +93,6 @@
                                 </button>
                                 <button class="attending">Absent</button>
                             </div>
-                            <div class="people_attending"></div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +104,10 @@
                 </div>
                 <div v-else>
                     <div v-for="tt in upComming" :key="tt.subjectCode">
-                        <div class="card" v-if="tt.nClasses == 1">
+                        <div
+                            class="card animate__animated animate__bounceIn"
+                            v-if="tt.nClasses == 1"
+                        >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
                             </div>
@@ -98,17 +122,24 @@
                                     {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="buttons">
+                            <div class="people_attending">
+                                <div v-if="subjects[tt.subjectCode].people">
+                                    {{ subjects[tt.subjectCode].people.length }}
+                                </div>
+                            </div>
+                            <div
+                                class="buttons"
+                                v-if="!subjects[tt.subjectCode].attended"
+                            >
                                 <button class="attending">
                                     Attending
                                 </button>
                                 <button class="attending">Not Attending</button>
                             </div>
-                            <div class="people_attending"></div>
                         </div>
                         <!-- //if a single slot have more then 1 classes  -->
                         <div
-                            class="card"
+                            class="card animate__animated animate__bounceIn"
                             v-else
                             v-for="clas in tt.classes"
                             :key="clas.subjectCode"
@@ -127,7 +158,22 @@
                                     {{ subjects[clas.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="people_attending"></div>
+                            <div class="people_attending">
+                                <div v-if="subjects[clas.subjectCode].people">
+                                    {{
+                                        subjects[clas.subjectCode].people.length
+                                    }}
+                                </div>
+                            </div>
+                            <div
+                                class="buttons"
+                                v-if="!subjects[clas.subjectCode].attended"
+                            >
+                                <button class="attending">
+                                    Attending
+                                </button>
+                                <button class="attending">Not Attending</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,7 +185,10 @@
                 </div>
                 <div v-else>
                     <div v-for="tt in ended" :key="tt.subjectCode">
-                        <div class="card" v-if="tt.nClasses == 1">
+                        <div
+                            class="card animate__animated animate__bounceIn"
+                            v-if="tt.nClasses == 1"
+                        >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
                             </div>
@@ -154,17 +203,24 @@
                                     {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="buttons">
+                            <div class="people_attending">
+                                <div v-if="subjects[tt.subjectCode].people">
+                                    {{ subjects[tt.subjectCode].people.length }}
+                                </div>
+                            </div>
+                            <div
+                                class="buttons"
+                                v-if="!subjects[tt.subjectCode].attended"
+                            >
                                 <button class="attending">
                                     Attended
                                 </button>
                                 <button class="attending">Not Attended</button>
                             </div>
-                            <div class="people_attending"></div>
                         </div>
                         <!-- //if a single slot have more then 1 classes  -->
                         <div
-                            class="card"
+                            class="card animate__animated animate__bounceIn"
                             v-else
                             v-for="clas in tt.classes"
                             :key="clas.subjectCode"
@@ -183,13 +239,22 @@
                                     {{ subjects[clas.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="buttons">
+                            <div class="people_attending">
+                                <div v-if="subjects[clas.subjectCode].people">
+                                    {{
+                                        subjects[clas.subjectCode].people.length
+                                    }}
+                                </div>
+                            </div>
+                            <div
+                                class="buttons"
+                                v-if="!subjects[clas.subjectCode].attended"
+                            >
                                 <button class="attending">
                                     Attended
                                 </button>
                                 <button class="attending">Not Attended</button>
                             </div>
-                            <div class="people_attending"></div>
                         </div>
                     </div>
                 </div>
@@ -203,31 +268,28 @@ import { onMounted, ref } from "vue"
 import { useCookie, useStore } from "@/js/store"
 import { api_url } from "@/js/configs/config"
 import io from "socket.io-client"
+import axios from "axios"
 
 const loading = ref(true)
 const [uid] = useCookie("uid")
+const [token] = useCookie("token")
 const [timetable, setTimetable] = useStore("timetable")
 const onGoing = ref(false)
 const upComming = ref([])
 const ended = ref([])
 const todayTimetable = ref(false)
 const subjects = ref("")
+const branchId = ref("")
 
 const socket = io(api_url)
+window.socket = socket
 
 setInterval(() => {
-    // let date = new Date()
-    // let hours = date.getHours()
-    // let mins = date.getMinutes()
-    // let str = `${hours}:${mins}`
-    // console.log(todayTimetable.value)
     checkClasses()
-    // console.log(onGoing.value)
 }, 2000)
 
 function markPresent(subjectCode) {
-    socket.emit("class_attend", uid(), subjectCode)
-    console.log(subjectCode)
+    socket.emit("class_attend", { token: token(), subjectCode })
 }
 
 function checkClasses() {
@@ -310,22 +372,24 @@ function isEnded(start, end) {
 }
 async function getTimeTable() {
     let day = new Date().getDay()
-    console.log(day)
     try {
-        let res = await fetch(`${api_url}/getTimetable?uid=${uid()}`)
-        let data = await res.json()
+        let { data } = await axios.get(`${api_url}/getTimetable`, {
+            params: {
+                uid: uid(),
+            },
+        })
         console.log(data)
         setTimetable(JSON.stringify(data))
         // console.log(JSON.parse(timetable()))
-        // todayTimetable.value = JSON.parse(timetable()).timetable[day]
-        todayTimetable.value = JSON.parse(timetable()).timetable[5]
+        todayTimetable.value = JSON.parse(timetable()).timetable[day]
+        // todayTimetable.value = JSON.parse(timetable()).timetable[5]
         subjects.value = JSON.parse(timetable()).subjects
         loading.value = false
         checkClasses()
     } catch (err) {
         if (timetable()) {
-            // todayTimetable.value = JSON.parse(timetable()).timetable[day]
-            todayTimetable.value = JSON.parse(timetable()).timetable[5]
+            todayTimetable.value = JSON.parse(timetable()).timetable[day]
+            // todayTimetable.value = JSON.parse(timetable()).timetable[5]
             subjects.value = JSON.parse(timetable()).subjects
             console.log(todayTimetable)
             loading.value = false
@@ -337,10 +401,14 @@ async function getTimeTable() {
 }
 async function joinSocketRoom() {
     try {
-        let res = await fetch(`${api_url}/getBranchId?uid=${uid()}`)
-        let data = await res.json()
-        let { branch_id } = data
-        console.log(data, uid())
+        let {
+            data: { branch_id },
+        } = await axios.get(`${api_url}/getBranchId`, {
+            params: {
+                uid: uid(),
+            },
+        })
+        branchId.value = branch_id
         socket.emit("join-room", uid(), branch_id)
     } catch (err) {
         alert(err.message)
@@ -352,6 +420,15 @@ export default {
         onMounted(() => {
             getTimeTable()
             joinSocketRoom()
+            socket.on("class_attend_response", (data) => {
+                if (!data.attended) alert(data.message)
+                else {
+                    subjects.value[data.subjectCode].attended = true
+                    if (!subjects.value[data.subjectCode].people)
+                        subjects.value[data.subjectCode].people = []
+                    subjects.value[data.subjectCode].people.push(data.user)
+                }
+            })
         })
         return {
             socket,
@@ -362,6 +439,7 @@ export default {
             isOngoing,
             isEnded,
             checkClasses,
+            branchId,
             onGoing,
             upComming,
             ended,
