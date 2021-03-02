@@ -6,99 +6,49 @@
         <div v-else>
             <div class="goingOn">
                 <div class="title">On Going Class</div>
-                <div v-if="!onGoing">
+                <div v-if="onGoing.length == 0">
                     <div class="subtitle">
                         No OnGoing classes
                     </div>
                 </div>
                 <div v-else>
-                    <div
-                        class="card animate__animated animate__bounceIn"
-                        v-if="onGoing.nClasses == 1"
-                    >
-                        <div class="class_name">
-                            {{ subjects[onGoing.subjectCode].name }}
-                        </div>
-                        <div class="class_time">
-                            <i><!-- time iconn --></i>
-                            <span>{{ onGoing.start }} - {{ onGoing.end }}</span>
-                        </div>
-                        <div class="class_place">
-                            <i> <!-- time iconn --></i>
-                            <span>
-                                {{ onGoing.place }}
-                                {{ subjects[onGoing.subjectCode].teacherName }}
-                            </span>
-                        </div>
-                        <div class="people_attending">
-                            <div v-if="subjects[onGoing.subjectCode].people">
-                                {{
-                                    subjects[onGoing.subjectCode].people.length
-                                }}
-                            </div>
-                        </div>
-                        <div
-                            class="buttons"
-                            v-if="!subjects[onGoing.subjectCode].attended"
-                        >
-                            <button
-                                class="attending"
-                                @click="markPresent(onGoing.subjectCode)"
-                            >
-                                Present
-                            </button>
-                            <button
-                                class="attending"
-                                @click="markAbsent(onGoing.subjectCode)"
-                            >
-                                Absent
-                            </button>
-                        </div>
-                    </div>
-                    <div v-else>
+                    <div v-for="tt in onGoing" :key="tt.subjectCode">
                         <div
                             class="card animate__animated animate__bounceIn"
-                            v-for="clas in onGoing.classes"
-                            :key="clas.subjectCode"
+                            v-if="!tt || !tt.group || tt.group == user.group"
                         >
-                            <!-- multiple classes  -->
                             <div class="class_name">
-                                {{ subjects[clas.subjectCode].name }}
+                                {{ subjects[tt.subjectCode].name }}
                             </div>
                             <div class="class_time">
                                 <i><!-- time iconn --></i>
-                                <span
-                                    >{{ onGoing.start }} -
-                                    {{ onGoing.end }}</span
-                                >
+                                <span>{{ tt.start }} - {{ tt.end }}</span>
                             </div>
                             <div class="class_place">
-                                <i><!-- time iconn --></i>
+                                <i> <!-- time iconn --></i>
                                 <span>
-                                    {{ clas.place }}
-                                    {{ subjects[clas.subjectCode].teacherName }}
+                                    {{ tt.place }}
+                                    {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
                             <div class="people_attending">
-                                <div v-if="subjects[clas.subjectCode].people">
-                                    {{
-                                        subjects[clas.subjectCode].people.length
-                                    }}
+                                <div v-if="subjects[tt.subjectCode].people">
+                                    {{ subjects[tt.subjectCode].people.length }}
                                 </div>
                             </div>
                             <div
                                 class="buttons"
-                                v-if="!subjects[clas.subjectCode].attended"
+                                v-if="!subjects[tt.subjectCode].attended"
                             >
                                 <button
                                     class="attending"
-                                    @click="markPresent(clas.subjectCode)"
+                                    @click="markPresent(tt.subjectCode)"
                                 >
                                     Present
                                 </button>
                                 <button
                                     class="attending"
-                                    @click="markAbsent(clas.subjectCode)"
+                                    @click="markAbsent(tt.subjectCode)"
                                 >
                                     Absent
                                 </button>
@@ -116,7 +66,7 @@
                     <div v-for="tt in upComming" :key="tt.subjectCode">
                         <div
                             class="card animate__animated animate__bounceIn"
-                            v-if="tt.nClasses == 1"
+                            v-if="!tt || !tt.group || tt.group == user.group"
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
@@ -133,13 +83,20 @@
                                 </span>
                             </div>
                             <div class="people_attending">
-                                <div v-if="subjects[tt.subjectCode].people">
-                                    {{ subjects[tt.subjectCode].people.length }}
+                                <div
+                                    v-if="
+                                        subjects[tt.subjectCode].peopleAttending
+                                    "
+                                >
+                                    {{
+                                        subjects[tt.subjectCode].peopleAttending
+                                            .length
+                                    }}
                                 </div>
                             </div>
                             <div
                                 class="buttons"
-                                v-if="!subjects[tt.subjectCode].attend"
+                                v-if="!subjects[tt.subjectCode].attending"
                             >
                                 <button
                                     class="attending"
@@ -150,52 +107,6 @@
                                 <button
                                     class="attending"
                                     @click="markNotAttending(tt.subjectCode)"
-                                >
-                                    Not Attending
-                                </button>
-                            </div>
-                        </div>
-                        <!-- //if a single slot have more then 1 classes  -->
-                        <div
-                            class="card animate__animated animate__bounceIn"
-                            v-else
-                            v-for="clas in tt.classes"
-                            :key="clas.subjectCode"
-                        >
-                            <div class="class_name">
-                                {{ subjects[clas.subjectCode].name }}
-                            </div>
-                            <div class="class_time">
-                                <i> <!-- time iconn --></i>
-                                <span>{{ tt.start }} - {{ tt.end }}</span>
-                            </div>
-                            <div class="class_place">
-                                <i> <!-- time iconn --></i>
-                                <span>
-                                    {{ clas.place }}
-                                    {{ subjects[clas.subjectCode].teacherName }}
-                                </span>
-                            </div>
-                            <div class="people_attending">
-                                <div v-if="subjects[clas.subjectCode].people">
-                                    {{
-                                        subjects[clas.subjectCode].people.length
-                                    }}
-                                </div>
-                            </div>
-                            <div
-                                class="buttons"
-                                v-if="!subjects[clas.subjectCode].attended"
-                            >
-                                <button
-                                    class="attending"
-                                    @click="markAttending(clas.subjectCode)"
-                                >
-                                    Attending
-                                </button>
-                                <button
-                                    class="attending"
-                                    @click="markNotAttending(clas.subjectCode)"
                                 >
                                     Not Attending
                                 </button>
@@ -213,7 +124,7 @@
                     <div v-for="tt in ended" :key="tt.subjectCode">
                         <div
                             class="card animate__animated animate__bounceIn"
-                            v-if="tt.nClasses == 1"
+                            v-if="!tt || !tt.group || tt.group == user.group"
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
@@ -252,52 +163,6 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- //if a single slot have more then 1 classes  -->
-                        <div
-                            class="card animate__animated animate__bounceIn"
-                            v-else
-                            v-for="clas in tt.classes"
-                            :key="clas.subjectCode"
-                        >
-                            <div class="class_name">
-                                {{ subjects[clas.subjectCode].name }}
-                            </div>
-                            <div class="class_time">
-                                <i> <!-- time iconn --></i>
-                                <span>{{ tt.start }} - {{ tt.end }}</span>
-                            </div>
-                            <div class="class_place">
-                                <i> <!-- time iconn --></i>
-                                <span>
-                                    {{ clas.place }}
-                                    {{ subjects[clas.subjectCode].teacherName }}
-                                </span>
-                            </div>
-                            <div class="people_attending">
-                                <div v-if="subjects[clas.subjectCode].people">
-                                    {{
-                                        subjects[clas.subjectCode].people.length
-                                    }}
-                                </div>
-                            </div>
-                            <div
-                                class="buttons"
-                                v-if="!subjects[clas.subjectCode].attended"
-                            >
-                                <button
-                                    class="attending"
-                                    @click="markPresent(clas.subjectCode)"
-                                >
-                                    Attended
-                                </button>
-                                <button
-                                    class="attending"
-                                    @click="markAbsent(clas.subjectCode)"
-                                >
-                                    Not Attended
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -316,9 +181,10 @@ const loading = ref(true)
 const [uid] = useCookie("uid")
 const [token] = useCookie("token")
 const [timetable, setTimetable] = useStore("timetable")
-const onGoing = ref(false)
+const onGoing = ref([])
 const upComming = ref([])
 const ended = ref([])
+const user = ref()
 const todayTimetable = ref(false)
 const subjects = ref("")
 const branchId = ref("")
@@ -354,7 +220,7 @@ function markNotAttending(subjectCode) {
 function checkClasses() {
     ended.value = []
     upComming.value = []
-    onGoing.value = false
+    onGoing.value = []
     if (todayTimetable.value && todayTimetable.value.length != 0)
         todayTimetable.value.forEach((slot) => {
             let pattern = /(\d+):(\d+)/
@@ -373,7 +239,7 @@ function checkClasses() {
                     { hours: es_hours, mins: es_mins }
                 )
             ) {
-                onGoing.value = slot
+                onGoing.value.push(slot)
                 // console.log(slot)
             } else if (
                 isEnded(
@@ -476,7 +342,6 @@ async function joinSocketRoom() {
     }
 }
 function handle_socket_response_of_attendandance_self(data) {
-    console.log(data)
     if (!data.attended) alert(data.message)
     else {
         subjects.value[data.subjectCode].attended = true
@@ -499,16 +364,47 @@ function handle_socket_response_of_attendandance(data) {
     }
 }
 function handle_socket_response_of_attendandance_self_upcomming(data) {
-    console.log(data)
+    if (!data.attended) alert(data.message)
+    else {
+        subjects.value[data.subjectCode].attending = true
+        if (!subjects.value[data.subjectCode].peopleAttending)
+            subjects.value[data.subjectCode].peopleAttending = []
+        if (data.present)
+            subjects.value[data.subjectCode].peopleAttending.push(data.user)
+    }
 }
 function handle_socket_response_of_attendandance_upcomming(data) {
-    console.log(data)
+    if (!data.attended) alert(data.message)
+    else {
+        if (data.user.uid == uid()) {
+            subjects.value[data.subjectCode].attending = true
+        }
+        if (!subjects.value[data.subjectCode].peopleAttending)
+            subjects.value[data.subjectCode].peopleAttending = []
+        if (data.present)
+            subjects.value[data.subjectCode].peopleAttending.push(data.user)
+    }
+}
+async function getUserDetails() {
+    try {
+        let { data } = await axios.get(`${api_url}/getinfo`, {
+            params: {
+                id: uid(),
+                token: token(),
+            },
+        })
+        user.value = data
+        console.log(user.value)
+    } catch (err) {
+        alert(err.message)
+    }
 }
 export default {
     setup() {
-        onMounted(() => {
-            getTimeTable()
-            joinSocketRoom()
+        onMounted(async () => {
+            await getUserDetails()
+            await getTimeTable()
+            await joinSocketRoom()
             socket.on(
                 "class_attend_response",
                 handle_socket_response_of_attendandance_self
@@ -524,6 +420,7 @@ export default {
             )
         })
         return {
+            user,
             socket,
             joinSocketRoom,
             loading,

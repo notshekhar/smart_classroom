@@ -13,7 +13,12 @@ function s_handle(s, uid, branch_id) {
                     message: "You are not autharized re-login ",
                 })
             } else {
-                let att = await attendedClass(uid, subjectCode, present)
+                let att = await attendedClass(
+                    uid,
+                    branch_id,
+                    subjectCode,
+                    present
+                )
                 if (att.attended) {
                     s.emit("class_attend_response", att)
                     s.to(branch_id).broadcast.emit("new_attendance", att)
@@ -38,7 +43,12 @@ function s_handle(s, uid, branch_id) {
                     message: "You are not autharized re-login ",
                 })
             } else {
-                let att = await attendClassUpcomming(uid, subjectCode, present)
+                let att = await attendClassUpcomming(
+                    uid,
+                    branch_id,
+                    subjectCode,
+                    present
+                )
                 if (att.attended) {
                     s.emit("class_attending_response", att)
                     s.to(branch_id).broadcast.emit(
@@ -56,7 +66,7 @@ function s_handle(s, uid, branch_id) {
     })
 }
 
-async function attendedClass(uid, subjectCode, present) {
+async function attendedClass(uid, branch_id, subjectCode, present) {
     let attended = await attendance.findOne({
         uid,
         subjectCode,
@@ -67,6 +77,7 @@ async function attendedClass(uid, subjectCode, present) {
         let att = await attendance.insert({
             subjectCode,
             uid,
+            branch_id,
             present,
             date: new Date().toDateString(),
         })
@@ -93,7 +104,7 @@ async function attendedClass(uid, subjectCode, present) {
     }
 }
 
-async function attendClassUpcomming(uid, subjectCode, present) {
+async function attendClassUpcomming(uid, branch_id, subjectCode, present) {
     let attended = await upcomming_attendance.findOne({
         uid,
         subjectCode,
@@ -104,6 +115,7 @@ async function attendClassUpcomming(uid, subjectCode, present) {
         let att = await upcomming_attendance.insert({
             subjectCode,
             uid,
+            branch_id,
             present,
             date: new Date().toDateString(),
         })

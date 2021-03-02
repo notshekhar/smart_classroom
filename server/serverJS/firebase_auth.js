@@ -36,6 +36,7 @@ async function auth_firebase(idToken) {
                 role: "student",
                 school_id: false,
                 branch_id: false,
+                group: false,
                 created_date: new Date(),
             }
             users.insert(data)

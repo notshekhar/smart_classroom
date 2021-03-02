@@ -6,6 +6,7 @@ const {
     branch_classes,
     classes,
     attendance,
+    upcomming_attendance,
 } = require("../db")
 
 //auth
@@ -58,6 +59,7 @@ async function infoHandle(req, res, next) {
             school_id,
             branch_id,
             roll_number,
+            group,
         } = await users.findOne({ uid: id })
         res.status(200).json({
             uid,
@@ -65,6 +67,7 @@ async function infoHandle(req, res, next) {
             school_id,
             branch_id,
             roll_number,
+            group,
         })
     } catch (err) {
         next(err)
@@ -102,6 +105,7 @@ async function getTimeTable(req, res, next) {
                 {
                     subjectCode: { $in: subjectCodes },
                 },
+                { branch_id: user.branch_id },
                 { present: true },
                 { date: new Date().toDateString() },
             ],
@@ -117,6 +121,36 @@ async function getTimeTable(req, res, next) {
                 {
                     subjectCode: { $in: subjectCodes },
                 },
+                { branch_id: user.branch_id },
+                { date: new Date().toDateString() },
+                { uid: uid },
+            ],
+        })
+
+        let upcomming_attending_people = await upcomming_attendance.find({
+            $and: [
+                {
+                    subjectCode: { $in: subjectCodes },
+                },
+                { branch_id: user.branch_id },
+                { present: true },
+                { date: new Date().toDateString() },
+            ],
+        })
+        let upcomming_attending_people_uids = upcomming_attending_people.map(
+            (e) => {
+                return e.uid
+            }
+        )
+        let upcomming_attending_people_names = await users.find({
+            uid: { $in: upcomming_attending_people_uids },
+        })
+        let upcomming_attended_classes = await upcomming_attendance.find({
+            $and: [
+                {
+                    subjectCode: { $in: subjectCodes },
+                },
+                { branch_id: user.branch_id },
                 { date: new Date().toDateString() },
                 { uid: uid },
             ],
@@ -137,6 +171,9 @@ async function getTimeTable(req, res, next) {
         attended_classes.forEach((a) => {
             subjects[a.subjectCode].attended = true
         })
+        upcomming_attended_classes.forEach((a) => {
+            subjects[a.subjectCode].attending = true
+        })
         //class attended by other users
         attending_people.forEach((a) => {
             //TODO: also add details like user_profile and name
@@ -152,6 +189,27 @@ async function getTimeTable(req, res, next) {
                 name: user_name,
                 photo_url: false,
             })
+        })
+        //upcomming classes attending people
+        upcomming_attending_people.forEach((a) => {
+            //TODO: also add details like user_profile and name
+            let user_name = upcomming_attending_people_names.filter(
+                (e) => e.uid == a.uid
+            )[0].name
+            if (
+                !(
+                    subjects[a.subjectCode] &&
+                    subjects[a.subjectCode].peopleAttending
+                )
+            )
+                subjects[a.subjectCode].peopleAttending = []
+
+            subjects[a.subjectCode].peopleAttending.push({
+                uid: a.uid,
+                name: user_name,
+                photo_url: false,
+            })
+            console.log(subjects[a.subjectCode].peopleAttending)
         })
         res.status(200).json({
             timetable: tt.timetable,
