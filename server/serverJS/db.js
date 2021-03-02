@@ -10,6 +10,7 @@ const timetable = db.get("timetable")
 const classes = db.get("classes")
 const branch_classes = db.get("branch_classes")
 const attendance = db.get("attendance")
+const upcomming_attendance = db.get("upcomming_attendance")
 
 // async function init() {
 //     // let i = await attendance.insert({ date: new Date().toDateString() })
@@ -30,4 +31,5 @@ module.exports = {
     timetable,
     branch_classes,
     attendance,
+    upcomming_attendance,
 }

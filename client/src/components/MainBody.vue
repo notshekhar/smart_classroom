@@ -47,7 +47,12 @@
                             >
                                 Present
                             </button>
-                            <button class="attending">Absent</button>
+                            <button
+                                class="attending"
+                                @click="markAbsent(onGoing.subjectCode)"
+                            >
+                                Absent
+                            </button>
                         </div>
                     </div>
                     <div v-else>
@@ -91,7 +96,12 @@
                                 >
                                     Present
                                 </button>
-                                <button class="attending">Absent</button>
+                                <button
+                                    class="attending"
+                                    @click="markAbsent(clas.subjectCode)"
+                                >
+                                    Absent
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -129,12 +139,20 @@
                             </div>
                             <div
                                 class="buttons"
-                                v-if="!subjects[tt.subjectCode].attended"
+                                v-if="!subjects[tt.subjectCode].attend"
                             >
-                                <button class="attending">
+                                <button
+                                    class="attending"
+                                    @click="markAttending(tt.subjectCode)"
+                                >
                                     Attending
                                 </button>
-                                <button class="attending">Not Attending</button>
+                                <button
+                                    class="attending"
+                                    @click="markNotAttending(tt.subjectCode)"
+                                >
+                                    Not Attending
+                                </button>
                             </div>
                         </div>
                         <!-- //if a single slot have more then 1 classes  -->
@@ -169,10 +187,18 @@
                                 class="buttons"
                                 v-if="!subjects[clas.subjectCode].attended"
                             >
-                                <button class="attending">
+                                <button
+                                    class="attending"
+                                    @click="markAttending(clas.subjectCode)"
+                                >
                                     Attending
                                 </button>
-                                <button class="attending">Not Attending</button>
+                                <button
+                                    class="attending"
+                                    @click="markNotAttending(clas.subjectCode)"
+                                >
+                                    Not Attending
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -212,10 +238,18 @@
                                 class="buttons"
                                 v-if="!subjects[tt.subjectCode].attended"
                             >
-                                <button class="attending">
+                                <button
+                                    class="attending"
+                                    @click="markPresent(tt.subjectCode)"
+                                >
                                     Attended
                                 </button>
-                                <button class="attending">Not Attended</button>
+                                <button
+                                    class="attending"
+                                    @click="markAbsent(tt.subjectCode)"
+                                >
+                                    Not Attended
+                                </button>
                             </div>
                         </div>
                         <!-- //if a single slot have more then 1 classes  -->
@@ -250,10 +284,18 @@
                                 class="buttons"
                                 v-if="!subjects[clas.subjectCode].attended"
                             >
-                                <button class="attending">
+                                <button
+                                    class="attending"
+                                    @click="markPresent(clas.subjectCode)"
+                                >
                                     Attended
                                 </button>
-                                <button class="attending">Not Attended</button>
+                                <button
+                                    class="attending"
+                                    @click="markAbsent(clas.subjectCode)"
+                                >
+                                    Not Attended
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -289,7 +331,24 @@ setInterval(() => {
 }, 2000)
 
 function markPresent(subjectCode) {
-    socket.emit("class_attend", { token: token(), subjectCode })
+    socket.emit("class_attend", { token: token(), subjectCode, present: true })
+}
+function markAbsent(subjectCode) {
+    socket.emit("class_attend", { token: token(), subjectCode, present: false })
+}
+function markAttending(subjectCode) {
+    socket.emit("class_attending", {
+        token: token(),
+        subjectCode,
+        present: true,
+    })
+}
+function markNotAttending(subjectCode) {
+    socket.emit("class_attending", {
+        token: token(),
+        subjectCode,
+        present: false,
+    })
 }
 
 function checkClasses() {
@@ -376,6 +435,7 @@ async function getTimeTable() {
         let { data } = await axios.get(`${api_url}/getTimetable`, {
             params: {
                 uid: uid(),
+                token: token(),
             },
         })
         console.log(data)
@@ -415,20 +475,53 @@ async function joinSocketRoom() {
         console.log(err)
     }
 }
+function handle_socket_response_of_attendandance_self(data) {
+    console.log(data)
+    if (!data.attended) alert(data.message)
+    else {
+        subjects.value[data.subjectCode].attended = true
+        if (!subjects.value[data.subjectCode].people)
+            subjects.value[data.subjectCode].people = []
+        if (data.present)
+            subjects.value[data.subjectCode].people.push(data.user)
+    }
+}
+function handle_socket_response_of_attendandance(data) {
+    if (!data.attended) alert(data.message)
+    else {
+        if (data.user.uid == uid()) {
+            subjects.value[data.subjectCode].attended = true
+        }
+        if (!subjects.value[data.subjectCode].people)
+            subjects.value[data.subjectCode].people = []
+        if (data.present)
+            subjects.value[data.subjectCode].people.push(data.user)
+    }
+}
+function handle_socket_response_of_attendandance_self_upcomming(data) {
+    console.log(data)
+}
+function handle_socket_response_of_attendandance_upcomming(data) {
+    console.log(data)
+}
 export default {
     setup() {
         onMounted(() => {
             getTimeTable()
             joinSocketRoom()
-            socket.on("class_attend_response", (data) => {
-                if (!data.attended) alert(data.message)
-                else {
-                    subjects.value[data.subjectCode].attended = true
-                    if (!subjects.value[data.subjectCode].people)
-                        subjects.value[data.subjectCode].people = []
-                    subjects.value[data.subjectCode].people.push(data.user)
-                }
-            })
+            socket.on(
+                "class_attend_response",
+                handle_socket_response_of_attendandance_self
+            )
+            socket.on("new_attendance", handle_socket_response_of_attendandance)
+            socket.on(
+                "class_attending_response",
+                handle_socket_response_of_attendandance_self_upcomming
+            )
+            socket.on(
+                "new_attendance_attending",
+                handle_socket_response_of_attendandance_upcomming
+            )
         })
         return {
             socket,
@@ -444,6 +537,9 @@ export default {
             upComming,
             ended,
             markPresent,
+            markAbsent,
+            markAttending,
+            markNotAttending,
         }
     },
 }

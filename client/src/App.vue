@@ -36,12 +36,21 @@ export default {
     outline: none;
 }
 #app {
+    position: absolute;
+    top: 0px;
+    left: calc(50% - 300px);
+    width: 600px;
     font-family: Heebo, Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
 }
-
+@media (max-width: 600px) {
+    #app {
+        width: 100%;
+        left: 0px;
+    }
+}
 /* .fade-enter-active,
 .fade-leave-active {
     transition: opacity 1000ms ease;

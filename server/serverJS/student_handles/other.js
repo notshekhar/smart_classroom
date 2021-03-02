@@ -102,8 +102,15 @@ async function getTimeTable(req, res, next) {
                 {
                     subjectCode: { $in: subjectCodes },
                 },
+                { present: true },
                 { date: new Date().toDateString() },
             ],
+        })
+        let attending_people_uids = attending_people.map((e) => {
+            return e.uid
+        })
+        let attending_people_names = await users.find({
+            uid: { $in: attending_people_uids },
         })
         let attended_classes = await attendance.find({
             $and: [
@@ -133,14 +140,18 @@ async function getTimeTable(req, res, next) {
         //class attended by other users
         attending_people.forEach((a) => {
             //TODO: also add details like user_profile and name
-            if (subjects[a.subjectCode] && subjects[a.subjectCode].people) {
-                subjects[a.subjectCode].people.push({
-                    uid: a.uid,
-                    photo_url: false,
-                })
-            } else {
-                subjects[a.subjectCode].people = [{ uid: a.uid }]
-            }
+            let user_name = attending_people_names.filter(
+                (e) => e.uid == a.uid
+            )[0].name
+
+            if (!(subjects[a.subjectCode] && subjects[a.subjectCode].people))
+                subjects[a.subjectCode].people = []
+
+            subjects[a.subjectCode].people.push({
+                uid: a.uid,
+                name: user_name,
+                photo_url: false,
+            })
         })
         res.status(200).json({
             timetable: tt.timetable,

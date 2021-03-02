@@ -23,7 +23,7 @@ router.get("/auth", authHandle)
 router.get("/allSchools", getAllSchools)
 router.get("/getBranches", getBranches)
 router.get("/getinfo", AuthMiddlewareQuery, infoHandle)
-router.get("/getTimetable", getTimeTable)
+router.get("/getTimetable", AuthMiddlewareQuery, getTimeTable)
 router.get("/getBranchId", getBranchId)
 //post req
 router.post("/updateDetails", AuthMiddlewareBody, updateDetailsHandle)
