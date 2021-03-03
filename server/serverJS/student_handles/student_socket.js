@@ -1,4 +1,9 @@
-const { attendance, upcomming_attendance, users } = require("../db")
+const {
+    attendance,
+    upcomming_attendance,
+    users,
+    users_profile,
+} = require("../db")
 const { auth } = require("../auth")
 
 function s_handle(s, uid, branch_id) {
@@ -73,6 +78,8 @@ async function attendedClass(uid, branch_id, subjectCode, present) {
         date: new Date().toDateString(),
     })
     let user = await users.findOne({ uid })
+    let user_profile = await users_profile.findOne({ uid })
+    user_profile = user_profile || { photo_url: false }
     if (!attended) {
         let att = await attendance.insert({
             subjectCode,
@@ -87,8 +94,9 @@ async function attendedClass(uid, branch_id, subjectCode, present) {
             subjectCode,
             user: {
                 uid,
-                photo_url: false,
+                photo_url: user_profile.photo_url || false,
                 name: user.name,
+                color: generateRandomColor(),
             },
         }
     }
@@ -98,8 +106,9 @@ async function attendedClass(uid, branch_id, subjectCode, present) {
         subjectCode,
         user: {
             uid,
-            photo_url: false,
+            photo_url: user_profile.photo_url || false,
             name: user.name,
+            color: generateRandomColor(),
         },
     }
 }
@@ -111,6 +120,9 @@ async function attendClassUpcomming(uid, branch_id, subjectCode, present) {
         date: new Date().toDateString(),
     })
     let user = await users.findOne({ uid })
+    let user_profile = await users_profile.findOne({ uid })
+    user_profile = user_profile || { photo_url: false }
+
     if (!attended) {
         let att = await upcomming_attendance.insert({
             subjectCode,
@@ -125,8 +137,9 @@ async function attendClassUpcomming(uid, branch_id, subjectCode, present) {
             subjectCode,
             user: {
                 uid,
-                photo_url: false,
+                photo_url: user_profile.photo_url || false,
                 name: user.name,
+                color: generateRandomColor(),
             },
         }
     }
@@ -136,10 +149,19 @@ async function attendClassUpcomming(uid, branch_id, subjectCode, present) {
         subjectCode,
         user: {
             uid,
-            photo_url: false,
+            photo_url: user_profile.photo_url || false,
             name: user.name,
+            color: generateRandomColor(),
         },
     }
+}
+
+function generateRandomColor() {
+    let str = "0123456789ABCDEF"
+    return "#xxxxxx".replace(
+        /x/g,
+        () => str[Math.floor(Math.random() * str.length)]
+    )
 }
 
 module.exports = s_handle

@@ -4,6 +4,7 @@ const monk = require("monk")
 const URI = "localhost/smartclass"
 const db = monk(URI)
 const users = db.get("users")
+const users_profile = db.get("users_profile")
 const schools = db.get("schools")
 const branches = db.get("branches")
 const timetable = db.get("timetable")
@@ -31,5 +32,6 @@ module.exports = {
     timetable,
     branch_classes,
     attendance,
+    users_profile,
     upcomming_attendance,
 }

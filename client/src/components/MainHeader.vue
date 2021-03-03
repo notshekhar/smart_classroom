@@ -1,12 +1,22 @@
 <template>
     <div class="home_header">
         <div class="logo"></div>
-        <div class="profile"></div>
+        <div class="profile" @click="router.push({ name: 'profile' })">
+            Profile
+        </div>
     </div>
 </template>
 
 <script>
-export default {}
+import { useRouter } from "vue-router"
+export default {
+    setup() {
+        let router = useRouter()
+        return {
+            router,
+        }
+    },
+}
 </script>
 
 <style>

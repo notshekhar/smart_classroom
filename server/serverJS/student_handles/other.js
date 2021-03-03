@@ -6,6 +6,7 @@ const {
     branch_classes,
     classes,
     attendance,
+    users_profile,
     upcomming_attendance,
 } = require("../db")
 
@@ -86,6 +87,13 @@ async function updateDetailsHandle(req, res, next) {
     }
 }
 
+function generateRandomColor() {
+    let str = "0123456789ABCDEF"
+    return "#xxxxxx".replace(
+        /x/g,
+        () => str[Math.floor(Math.random() * str.length)]
+    )
+}
 async function getTimeTable(req, res, next) {
     try {
         let { uid } = req.query
@@ -113,6 +121,10 @@ async function getTimeTable(req, res, next) {
         let attending_people_uids = attending_people.map((e) => {
             return e.uid
         })
+        let attending_people_photo_url = await users_profile.find({
+            uid: { $in: attending_people_uids },
+        })
+
         let attending_people_names = await users.find({
             uid: { $in: attending_people_uids },
         })
@@ -142,6 +154,9 @@ async function getTimeTable(req, res, next) {
                 return e.uid
             }
         )
+        let upcomming_attending_people_photo_url = await users_profile.find({
+            uid: { $in: upcomming_attending_people_uids },
+        })
         let upcomming_attending_people_names = await users.find({
             uid: { $in: upcomming_attending_people_uids },
         })
@@ -180,6 +195,13 @@ async function getTimeTable(req, res, next) {
             let user_name = attending_people_names.filter(
                 (e) => e.uid == a.uid
             )[0].name
+            let user_profile = attending_people_photo_url.filter(
+                (e) => e.uid == a.uid
+            )
+            user_profile =
+                user_profile.length == 0
+                    ? { photo_url: false }
+                    : user_profile[0]
 
             if (!(subjects[a.subjectCode] && subjects[a.subjectCode].people))
                 subjects[a.subjectCode].people = []
@@ -187,7 +209,8 @@ async function getTimeTable(req, res, next) {
             subjects[a.subjectCode].people.push({
                 uid: a.uid,
                 name: user_name,
-                photo_url: false,
+                photo_url: user_profile.photo_url || false,
+                color: generateRandomColor(),
             })
         })
         //upcomming classes attending people
@@ -196,6 +219,13 @@ async function getTimeTable(req, res, next) {
             let user_name = upcomming_attending_people_names.filter(
                 (e) => e.uid == a.uid
             )[0].name
+            let user_profile = upcomming_attending_people_photo_url.filter(
+                (e) => e.uid == a.uid
+            )
+            user_profile =
+                user_profile.length == 0
+                    ? { photo_url: false }
+                    : user_profile[0]
             if (
                 !(
                     subjects[a.subjectCode] &&
@@ -207,9 +237,8 @@ async function getTimeTable(req, res, next) {
             subjects[a.subjectCode].peopleAttending.push({
                 uid: a.uid,
                 name: user_name,
-                photo_url: false,
+                photo_url: user_profile.photo_url || false,
             })
-            console.log(subjects[a.subjectCode].peopleAttending)
         })
         res.status(200).json({
             timetable: tt.timetable,

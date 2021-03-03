@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-import Home from "../views/home/Home.vue"
-import NotFound from "../views/NotFound.vue"
-import Details from "../views/Details.vue"
-import Main from "../views/home/Main.vue"
-import GetStarted from "../views/getStarted/getStarted.vue"
-import GetStarted2 from "../views/getStarted/getStarted2.vue"
-import Login from "../views/auth/Login.vue"
+import Home from "@/views/home/Home.vue"
+import Profile from "@/views/home/Profile.vue"
+import NotFound from "@/views/NotFound.vue"
+import Details from "@/views/Details.vue"
+import Main from "@/views/home/Main.vue"
+import GetStarted from "@/views/getStarted/getStarted.vue"
+import GetStarted2 from "@/views/getStarted/getStarted2.vue"
+import Login from "@/views/auth/Login.vue"
 
-import { useCookie, useStore } from "../js/store"
-import { handleRouterTransisitions } from "../js/routerTransitions"
-import { api_url } from "../js/configs/config"
+import { useCookie, useStore } from "@/js/store"
+import { handleRouterTransisitions } from "@/js/routerTransitions"
+import { api_url } from "@/js/configs/config"
 import axios from "axios"
 
 const [first] = useStore("first-time")
@@ -75,6 +76,11 @@ const routes = [
                 path: "/polls",
                 name: "polls",
                 component: Main,
+            },
+            {
+                path: "/profile",
+                name: "profile",
+                component: Profile,
             },
         ],
     },

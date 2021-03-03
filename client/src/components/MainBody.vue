@@ -19,21 +19,59 @@
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
+                                ({{ tt.subjectCode }})
                             </div>
                             <div class="class_time">
-                                <i><!-- time iconn --></i>
+                                <i class="far fa-clock"></i>
                                 <span>{{ tt.start }} - {{ tt.end }}</span>
                             </div>
                             <div class="class_place">
-                                <i> <!-- time iconn --></i>
+                                <i class="far fa-user-circle"></i>
                                 <span>
                                     {{ tt.place }}
                                     {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="people_attending">
-                                <div v-if="subjects[tt.subjectCode].people">
-                                    {{ subjects[tt.subjectCode].people.length }}
+                            <div
+                                class="people_attending"
+                                v-if="subjects[tt.subjectCode].people"
+                            >
+                                <div
+                                    class="people_card animate__animated animate__tada"
+                                    v-for="ppl in subjects[
+                                        tt.subjectCode
+                                    ].people.slice(0, 3)"
+                                    :key="ppl.uid"
+                                >
+                                    <div
+                                        class="icon"
+                                        :style="{ backgroundColor: ppl.color }"
+                                    >
+                                        <img
+                                            :alt="ppl.name"
+                                            :src="ppl.photo_url"
+                                            v-if="ppl.photo_url"
+                                        />
+                                        <span v-else>
+                                            {{ ppl.name[0].toUpperCase() }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="people_card p_highligh animate__animated animate__tada"
+                                    v-if="
+                                        subjects[tt.subjectCode].people.length >
+                                            3
+                                    "
+                                >
+                                    <div class="icon">
+                                        <span>
+                                            +{{
+                                                subjects[tt.subjectCode].people
+                                                    .length - 3
+                                            }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div
@@ -70,28 +108,59 @@
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
+                                ({{ tt.subjectCode }})
                             </div>
                             <div class="class_time">
-                                <i> <!-- time iconn --></i>
+                                <i class="far fa-clock"></i>
                                 <span>{{ tt.start }} - {{ tt.end }}</span>
                             </div>
                             <div class="class_place">
-                                <i> <!-- time iconn --></i>
+                                <i class="far fa-user-circle"></i>
                                 <span>
                                     {{ tt.place }}
                                     {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="people_attending">
+                            <div
+                                class="people_attending"
+                                v-if="subjects[tt.subjectCode].peopleAttending"
+                            >
                                 <div
+                                    class="people_card animate__animated animate__tada"
+                                    v-for="ppl in subjects[
+                                        tt.subjectCode
+                                    ].peopleAttending.slice(0, 3)"
+                                    :key="ppl.uid"
+                                >
+                                    <div
+                                        class="icon"
+                                        :style="{ backgroundColor: ppl.color }"
+                                    >
+                                        <img
+                                            :alt="ppl.name"
+                                            :src="ppl.photo_url"
+                                            v-if="ppl.photo_url"
+                                        />
+                                        <span v-else>
+                                            {{ ppl.name[0].toUpperCase() }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="people_card p_highligh animate__animated animate__tada"
                                     v-if="
                                         subjects[tt.subjectCode].peopleAttending
+                                            .length > 3
                                     "
                                 >
-                                    {{
-                                        subjects[tt.subjectCode].peopleAttending
-                                            .length
-                                    }}
+                                    <div class="icon">
+                                        <span>
+                                            +{{
+                                                subjects[tt.subjectCode]
+                                                    .peopleAttending.length - 3
+                                            }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div
@@ -128,21 +197,59 @@
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
+                                ({{ tt.subjectCode }})
                             </div>
                             <div class="class_time">
-                                <i> <!-- time iconn --></i>
+                                <i class="far fa-clock"></i>
                                 <span>{{ tt.start }} - {{ tt.end }}</span>
                             </div>
                             <div class="class_place">
-                                <i> <!-- time iconn --></i>
+                                <i class="far fa-user-circle"></i>
                                 <span>
                                     {{ tt.place }}
                                     {{ subjects[tt.subjectCode].teacherName }}
                                 </span>
                             </div>
-                            <div class="people_attending">
-                                <div v-if="subjects[tt.subjectCode].people">
-                                    {{ subjects[tt.subjectCode].people.length }}
+                            <div
+                                class="people_attending"
+                                v-if="subjects[tt.subjectCode].people"
+                            >
+                                <div
+                                    class="people_card animate__animated animate__tada"
+                                    v-for="ppl in subjects[
+                                        tt.subjectCode
+                                    ].people.slice(0, 3)"
+                                    :key="ppl.uid"
+                                >
+                                    <div
+                                        class="icon"
+                                        :style="{ backgroundColor: ppl.color }"
+                                    >
+                                        <img
+                                            :alt="ppl.name"
+                                            :src="ppl.photo_url"
+                                            v-if="ppl.photo_url"
+                                        />
+                                        <span v-else>
+                                            {{ ppl.name[0].toUpperCase() }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="people_card p_highligh animate__animated animate__tada"
+                                    v-if="
+                                        subjects[tt.subjectCode].people.length >
+                                            3
+                                    "
+                                >
+                                    <div class="icon">
+                                        <span>
+                                            +{{
+                                                subjects[tt.subjectCode].people
+                                                    .length - 3
+                                            }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div
@@ -193,7 +300,7 @@ const socket = io(api_url)
 window.socket = socket
 
 setInterval(() => {
-    checkClasses()
+    if (!loading.value) checkClasses()
 }, 2000)
 
 function markPresent(subjectCode) {
@@ -399,6 +506,7 @@ async function getUserDetails() {
         alert(err.message)
     }
 }
+
 export default {
     setup() {
         onMounted(async () => {
@@ -481,7 +589,7 @@ export default {
     padding: 20px;
     border-radius: 21px;
     /* background-color: rgb(244, 244, 244); */
-    background-color: rgb(36 136 246 / 5%);
+    background-color: #f4f9ff;
     border: solid 1px;
     border-color: rgb(36 136 246 / 10%);
     display: flex;
@@ -497,5 +605,75 @@ export default {
     font-weight: 500;
     font-size: 13px;
     color: grey;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.card > .class_time > i,
+.class_place > i {
+    color: #2488f6;
+}
+.card > .people_attending {
+    position: relative;
+    margin-top: 10px;
+    height: 28px;
+    display: flex;
+}
+.card > .people_attending .people_card {
+    position: relative;
+    max-height: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    min-width: 28px;
+    overflow: hidden;
+    border-radius: 15px;
+    margin-right: -15px;
+    /* box-shadow: -1px 1px 4px 0px rgba(0, 0, 0, 0.1); */
+    border: solid 3px;
+    border-color: #f4f9ff;
+}
+.p_highligh {
+    margin-left: 18px;
+    background-color: #2488f6;
+}
+.p_highligh > .icon > span {
+    color: white;
+    font-size: 11px;
+}
+.card > .people_attending .people_card > .icon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+}
+.card > .people_attending .people_card > .icon > img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.card > .buttons {
+    position: relative;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    height: 30px;
+}
+.card > .buttons > button {
+    border-radius: 11px;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 0 15px 0 15px;
+}
+.card > .buttons > button:first-child {
+    background: #2488f6;
+}
+.card > .buttons > button:nth-child(2) {
+    background: rgb(255, 63, 63);
 }
 </style>
