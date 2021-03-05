@@ -183,7 +183,7 @@ export default {
                     //set cookie
                     setToken(data.token)
                     setUid(data.uid)
-                    router.push({ name: "Home" })
+                    router.push({ name: "home" })
                 } else {
                     alert(data.message)
                 }

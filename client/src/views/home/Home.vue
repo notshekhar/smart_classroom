@@ -10,14 +10,11 @@
 // @ is an alias to /src
 import Footer from "@/components/Footer.vue"
 import { onMounted } from "vue"
-import { useRouter } from "vue-router"
 
 export default {
     setup() {
-        const router = useRouter()
         onMounted(() => {
             document.title = "Timetable | Home"
-            router.push({ name: "home" })
         })
         return {
             Footer,

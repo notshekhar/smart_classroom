@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const {
     schools,
     users,
@@ -60,13 +62,24 @@ async function infoHandle(req, res, next) {
             school_id,
             branch_id,
             roll_number,
+            mobile,
+            email,
             group,
         } = await users.findOne({ uid: id })
+        let user_profile = await users_profile.findOne({ uid: id }, "uid")
+        user_profile = user_profile ? `/getUserProfile/${id}` : false
+
+        let school = await schools.findOne({ _id: school_id })
+        let branch = await branches.findOne({ _id: branch_id })
+
         res.status(200).json({
             uid,
             name,
             school_id,
+            school: school.name || false,
+            branch: branch.name || false,
             branch_id,
+            photo_url: user_profile,
             roll_number,
             group,
         })
@@ -121,9 +134,12 @@ async function getTimeTable(req, res, next) {
         let attending_people_uids = attending_people.map((e) => {
             return e.uid
         })
-        let attending_people_photo_url = await users_profile.find({
-            uid: { $in: attending_people_uids },
-        })
+        let attending_people_photo_url = await users_profile.find(
+            {
+                uid: { $in: attending_people_uids },
+            },
+            "uid"
+        )
 
         let attending_people_names = await users.find({
             uid: { $in: attending_people_uids },
@@ -154,9 +170,12 @@ async function getTimeTable(req, res, next) {
                 return e.uid
             }
         )
-        let upcomming_attending_people_photo_url = await users_profile.find({
-            uid: { $in: upcomming_attending_people_uids },
-        })
+        let upcomming_attending_people_photo_url = await users_profile.find(
+            {
+                uid: { $in: upcomming_attending_people_uids },
+            },
+            "uid"
+        )
         let upcomming_attending_people_names = await users.find({
             uid: { $in: upcomming_attending_people_uids },
         })
@@ -201,7 +220,9 @@ async function getTimeTable(req, res, next) {
             user_profile =
                 user_profile.length == 0
                     ? { photo_url: false }
-                    : user_profile[0]
+                    : {
+                          photo_url: `/getUserProfile/${user_profile[0].uid}`,
+                      }
 
             if (!(subjects[a.subjectCode] && subjects[a.subjectCode].people))
                 subjects[a.subjectCode].people = []
@@ -225,7 +246,9 @@ async function getTimeTable(req, res, next) {
             user_profile =
                 user_profile.length == 0
                     ? { photo_url: false }
-                    : user_profile[0]
+                    : {
+                          photo_url: `/getUserProfile/${user_profile[0].uid}`,
+                      }
             if (
                 !(
                     subjects[a.subjectCode] &&
@@ -236,6 +259,7 @@ async function getTimeTable(req, res, next) {
 
             subjects[a.subjectCode].peopleAttending.push({
                 uid: a.uid,
+                color: generateRandomColor(),
                 name: user_name,
                 photo_url: user_profile.photo_url || false,
             })
@@ -257,6 +281,25 @@ async function getBranchId(req, res, next) {
         next(err)
     }
 }
+async function getUserProfile(req, res, next) {
+    try {
+        let { uid } = req.params
+        let user_profile = await users_profile.findOne({ uid })
+        let img = Buffer.from(
+            user_profile.photo_url.replace(
+                /^data:image\/(png|jpeg|jpg);base64,/,
+                ""
+            ),
+            "base64"
+        )
+        res.writeHead(200, {
+            "Content-Type": "image/png",
+            "Content-Length": img.length,
+        }).end(img)
+    } catch (err) {
+        next(err)
+    }
+}
 module.exports = {
     AuthMiddlewareQuery,
     AuthMiddlewareBody,
@@ -266,4 +309,5 @@ module.exports = {
     updateDetailsHandle,
     getTimeTable,
     getBranchId,
+    getUserProfile,
 }

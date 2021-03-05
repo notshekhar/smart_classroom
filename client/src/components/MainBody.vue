@@ -1,11 +1,11 @@
 <template>
     <div class="home_body">
-        <div class="loading" v-if="loading">
+        <div class="loading" v-if="AppState.loading">
             <img src="@/assets/images/loading.svg" alt="" />
         </div>
         <div v-else>
             <div class="goingOn">
-                <div class="title">On Going Class</div>
+                <div class="title appear_in">On Going Class</div>
                 <div v-if="onGoing.length == 0">
                     <div class="subtitle">
                         No OnGoing classes
@@ -14,8 +14,12 @@
                 <div v-else>
                     <div v-for="tt in onGoing" :key="tt.subjectCode">
                         <div
-                            class="card animate__animated animate__bounceIn"
-                            v-if="!tt || !tt.group || tt.group == user.group"
+                            class="appear_in card"
+                            v-if="
+                                !tt ||
+                                    !tt.group ||
+                                    tt.group == AppState.user.group
+                            "
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
@@ -96,15 +100,19 @@
                 </div>
             </div>
             <div class="upcomming">
-                <div class="title">Upcomming Classes</div>
+                <div class="title appear_in">Upcomming Classes</div>
                 <div class="subtitle" v-if="upComming.length == 0">
                     No Upcomming classes
                 </div>
                 <div v-else>
                     <div v-for="tt in upComming" :key="tt.subjectCode">
                         <div
-                            class="card animate__animated animate__bounceIn"
-                            v-if="!tt || !tt.group || tt.group == user.group"
+                            class="appear_in card"
+                            v-if="
+                                !tt ||
+                                    !tt.group ||
+                                    tt.group == AppState.user.group
+                            "
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
@@ -185,15 +193,19 @@
                 </div>
             </div>
             <div class="ended">
-                <div class="title">Ended Classes</div>
+                <div class="appear_in title">Ended Classes</div>
                 <div class="subtitle" v-if="ended.length == 0">
                     No Ended classes
                 </div>
                 <div v-else>
                     <div v-for="tt in ended" :key="tt.subjectCode">
                         <div
-                            class="card animate__animated animate__bounceIn"
-                            v-if="!tt || !tt.group || tt.group == user.group"
+                            class="appear_in card"
+                            v-if="
+                                !tt ||
+                                    !tt.group ||
+                                    tt.group == AppState.user.group
+                            "
                         >
                             <div class="class_name">
                                 {{ subjects[tt.subjectCode].name }}
@@ -227,7 +239,7 @@
                                     >
                                         <img
                                             :alt="ppl.name"
-                                            :src="ppl.photo_url"
+                                            :src="api_url + ppl.photo_url"
                                             v-if="ppl.photo_url"
                                         />
                                         <span v-else>
@@ -283,15 +295,15 @@ import { useCookie, useStore } from "@/js/store"
 import { api_url } from "@/js/configs/config"
 import io from "socket.io-client"
 import axios from "axios"
+import { AppState } from "@/states"
 
-const loading = ref(true)
+// const loading = ref(true)
 const [uid] = useCookie("uid")
 const [token] = useCookie("token")
 const [timetable, setTimetable] = useStore("timetable")
 const onGoing = ref([])
 const upComming = ref([])
 const ended = ref([])
-const user = ref()
 const todayTimetable = ref(false)
 const subjects = ref("")
 const branchId = ref("")
@@ -300,7 +312,7 @@ const socket = io(api_url)
 window.socket = socket
 
 setInterval(() => {
-    if (!loading.value) checkClasses()
+    if (!AppState.loading) checkClasses()
 }, 2000)
 
 function markPresent(subjectCode) {
@@ -417,7 +429,7 @@ async function getTimeTable() {
         todayTimetable.value = JSON.parse(timetable()).timetable[day]
         // todayTimetable.value = JSON.parse(timetable()).timetable[5]
         subjects.value = JSON.parse(timetable()).subjects
-        loading.value = false
+        AppState.loading = false
         checkClasses()
     } catch (err) {
         if (timetable()) {
@@ -425,7 +437,7 @@ async function getTimeTable() {
             // todayTimetable.value = JSON.parse(timetable()).timetable[5]
             subjects.value = JSON.parse(timetable()).subjects
             console.log(todayTimetable)
-            loading.value = false
+            AppState.loading = false
             checkClasses()
         }
         // alert(err)
@@ -500,11 +512,34 @@ async function getUserDetails() {
                 token: token(),
             },
         })
-        user.value = data
-        console.log(user.value)
+        AppState.user = data
+        console.log(AppState.user)
     } catch (err) {
         alert(err.message)
     }
+}
+
+async function setObserver() {
+    let elements = document.querySelectorAll(".appear_in")
+    const options = {
+        threshold: 1,
+    }
+    const appearOnScroll = new IntersectionObserver(function(
+        entries,
+        appearOnScroll
+    ) {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            entry.target.classList.add("show")
+            entry.target.classList.add("animate__animated")
+            entry.target.classList.add("animate__bounceIn")
+            appearOnScroll.unobserve(entry.target)
+        })
+    },
+    options)
+    elements.forEach((el) => {
+        appearOnScroll.observe(el)
+    })
 }
 
 export default {
@@ -512,6 +547,7 @@ export default {
         onMounted(async () => {
             await getUserDetails()
             await getTimeTable()
+            await setObserver()
             await joinSocketRoom()
             socket.on(
                 "class_attend_response",
@@ -528,14 +564,15 @@ export default {
             )
         })
         return {
-            user,
+            AppState,
             socket,
             joinSocketRoom,
-            loading,
+            // loading,
             todayTimetable,
             subjects,
             isOngoing,
             isEnded,
+            api_url,
             checkClasses,
             branchId,
             onGoing,
@@ -675,5 +712,11 @@ export default {
 }
 .card > .buttons > button:nth-child(2) {
     background: rgb(255, 63, 63);
+}
+.appear_in {
+    opacity: 0;
+}
+.show {
+    opacity: 1;
 }
 </style>
