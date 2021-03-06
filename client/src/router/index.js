@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 
 import Home from "@/views/home/Home.vue"
 import Profile from "@/views/home/Profile.vue"
+// import EditProfile from "@/views/home/EditProfile.vue"
 import NotFound from "@/views/NotFound.vue"
 import Details from "@/views/Details.vue"
 import Main from "@/views/home/Main.vue"
@@ -81,6 +82,11 @@ const routes = [
                 path: "/profile",
                 name: "profile",
                 component: Profile,
+            },
+            {
+                path: "/editProfile",
+                name: "edit_profile",
+                component: Details,
             },
         ],
     },

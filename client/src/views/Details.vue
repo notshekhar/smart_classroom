@@ -44,6 +44,19 @@
                 </option>
             </select>
         </div>
+        <!-- <div class="input">
+            Group
+            <select id="branch" name="branch" v-model="branch">
+                <option value="null" selected hidden>Select Branch</option>
+                <option
+                    v-for="branch in branches"
+                    :value="branch._id"
+                    :key="branch._id"
+                >
+                    {{ branch.name }}
+                </option>
+            </select>
+        </div> -->
         <button
             @click="submitDetails()"
             class="animate__animated animate__rubberBand"

@@ -53,7 +53,7 @@
                                     >
                                         <img
                                             :alt="ppl.name"
-                                            :src="ppl.photo_url"
+                                            :src="api_url + ppl.photo_url"
                                             v-if="ppl.photo_url"
                                         />
                                         <span v-else>
@@ -146,7 +146,7 @@
                                     >
                                         <img
                                             :alt="ppl.name"
-                                            :src="ppl.photo_url"
+                                            :src="api_url + ppl.photo_url"
                                             v-if="ppl.photo_url"
                                         />
                                         <span v-else>
