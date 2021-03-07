@@ -79,6 +79,8 @@ async function infoHandle(req, res, next) {
             school: school.name || false,
             branch: branch.name || false,
             branch_id,
+            mobile,
+            email,
             photo_url: user_profile,
             roll_number,
             group,
@@ -93,7 +95,14 @@ async function updateDetailsHandle(req, res, next) {
         let { data, uid, photo_url } = req.body
         console.log(data)
         let update = await users.findOneAndUpdate({ uid }, { $set: data })
+        let update_p = photo_url
+            ? await users_profile.findOneAndUpdate(
+                  { uid },
+                  { $set: { photo_url } }
+              )
+            : ""
         if (!update) throw new Error("Somethig went wrong")
+        if (!update_p) throw new Error("Somethig went wrong")
         res.json({ updated: true })
     } catch (err) {
         next(err)
@@ -117,153 +126,13 @@ async function getTimeTable(req, res, next) {
         let tt = await timetable.findOne({
             branch_id: user.branch_id,
         })
-        let subjectCodes = branch_c.classes.map((e) => e.subjectCode)
+        let subjectCodes = parseSubjectCodes(branch_c)
         let s = await classes.find({
             subjectCode: { $in: subjectCodes },
         })
-        let attending_people = await attendance.find({
-            $and: [
-                {
-                    subjectCode: { $in: subjectCodes },
-                },
-                { branch_id: user.branch_id },
-                { present: true },
-                { date: new Date().toDateString() },
-            ],
-        })
-        let attending_people_uids = attending_people.map((e) => {
-            return e.uid
-        })
-        let attending_people_photo_url = await users_profile.find(
-            {
-                uid: { $in: attending_people_uids },
-            },
-            "uid"
-        )
 
-        let attending_people_names = await users.find({
-            uid: { $in: attending_people_uids },
-        })
-        let attended_classes = await attendance.find({
-            $and: [
-                {
-                    subjectCode: { $in: subjectCodes },
-                },
-                { branch_id: user.branch_id },
-                { date: new Date().toDateString() },
-                { uid: uid },
-            ],
-        })
+        let subjects = await prepareSubjects(s, branch_c, user, subjectCodes)
 
-        let upcomming_attending_people = await upcomming_attendance.find({
-            $and: [
-                {
-                    subjectCode: { $in: subjectCodes },
-                },
-                { branch_id: user.branch_id },
-                { present: true },
-                { date: new Date().toDateString() },
-            ],
-        })
-        let upcomming_attending_people_uids = upcomming_attending_people.map(
-            (e) => {
-                return e.uid
-            }
-        )
-        let upcomming_attending_people_photo_url = await users_profile.find(
-            {
-                uid: { $in: upcomming_attending_people_uids },
-            },
-            "uid"
-        )
-        let upcomming_attending_people_names = await users.find({
-            uid: { $in: upcomming_attending_people_uids },
-        })
-        let upcomming_attended_classes = await upcomming_attendance.find({
-            $and: [
-                {
-                    subjectCode: { $in: subjectCodes },
-                },
-                { branch_id: user.branch_id },
-                { date: new Date().toDateString() },
-                { uid: uid },
-            ],
-        })
-        // console.log(attending_people)
-        let subjects = {}
-        s.forEach((e) => {
-            let sd = branch_c.classes.filter(
-                (c) => c.subjectCode == e.subjectCode
-            )[0]
-            subjects[sd.subjectCode] = {
-                name: e.name,
-                teacherName: sd.teacherName,
-                people: false,
-            }
-        })
-        //classes attended by the user
-        attended_classes.forEach((a) => {
-            subjects[a.subjectCode].attended = true
-        })
-        upcomming_attended_classes.forEach((a) => {
-            subjects[a.subjectCode].attending = true
-        })
-        //class attended by other users
-        attending_people.forEach((a) => {
-            //TODO: also add details like user_profile and name
-            let user_name = attending_people_names.filter(
-                (e) => e.uid == a.uid
-            )[0].name
-            let user_profile = attending_people_photo_url.filter(
-                (e) => e.uid == a.uid
-            )
-            user_profile =
-                user_profile.length == 0
-                    ? { photo_url: false }
-                    : {
-                          photo_url: `/getUserProfile/${user_profile[0].uid}`,
-                      }
-
-            if (!(subjects[a.subjectCode] && subjects[a.subjectCode].people))
-                subjects[a.subjectCode].people = []
-
-            subjects[a.subjectCode].people.push({
-                uid: a.uid,
-                name: user_name,
-                photo_url: user_profile.photo_url || false,
-                color: generateRandomColor(),
-            })
-        })
-        //upcomming classes attending people
-        upcomming_attending_people.forEach((a) => {
-            //TODO: also add details like user_profile and name
-            let user_name = upcomming_attending_people_names.filter(
-                (e) => e.uid == a.uid
-            )[0].name
-            let user_profile = upcomming_attending_people_photo_url.filter(
-                (e) => e.uid == a.uid
-            )
-            user_profile =
-                user_profile.length == 0
-                    ? { photo_url: false }
-                    : {
-                          photo_url: `/getUserProfile/${user_profile[0].uid}`,
-                      }
-            if (
-                !(
-                    subjects[a.subjectCode] &&
-                    subjects[a.subjectCode].peopleAttending
-                )
-            )
-                subjects[a.subjectCode].peopleAttending = []
-
-            subjects[a.subjectCode].peopleAttending.push({
-                uid: a.uid,
-                color: generateRandomColor(),
-                name: user_name,
-                photo_url: user_profile.photo_url || false,
-            })
-        })
         res.status(200).json({
             timetable: tt.timetable,
             subjects,
@@ -272,6 +141,176 @@ async function getTimeTable(req, res, next) {
         next(err)
     }
 }
+function parseSubjectCodes(branch_c) {
+    return branch_c.classes.map((e) => e.subjectCode)
+}
+async function prepareSubjects(s, branch_c, user, subjectCodes) {
+    let subjects = {}
+    s.forEach((e) => {
+        let sd = branch_c.classes.filter(
+            (c) => c.subjectCode == e.subjectCode
+        )[0]
+        subjects[sd.subjectCode] = {
+            name: e.name,
+            teacherName: sd.teacherName,
+            people: false,
+        }
+    })
+    await appendAttendedPeopleAndClassesAttendedByUserInSubjects(
+        subjects,
+        user,
+        subjectCodes
+    )
+    await appendAttendingPeopleAndClassesAttendedByUserInSubjects(
+        subjects,
+        user,
+        subjectCodes
+    )
+    return subjects
+}
+async function appendAttendedPeopleAndClassesAttendedByUserInSubjects(
+    subjects,
+    user,
+    subjectCodes
+) {
+    let attending_people = await attendance.find({
+        $and: [
+            {
+                subjectCode: { $in: subjectCodes },
+            },
+            { branch_id: user.branch_id },
+            { present: true },
+            { date: new Date().toDateString() },
+        ],
+    })
+    let attending_people_uids = attending_people.map((e) => {
+        return e.uid
+    })
+    let attending_people_photo_url = await users_profile.find(
+        {
+            uid: { $in: attending_people_uids },
+        },
+        "uid"
+    )
+
+    let attending_people_names = await users.find({
+        uid: { $in: attending_people_uids },
+    })
+    let attended_classes = await attendance.find({
+        $and: [
+            {
+                subjectCode: { $in: subjectCodes },
+            },
+            { branch_id: user.branch_id },
+            { date: new Date().toDateString() },
+            { uid: user.uid },
+        ],
+    })
+    //classes attended by the user
+    attended_classes.forEach((a) => {
+        subjects[a.subjectCode].attended = true
+    })
+    //class attended by other users
+    attending_people.forEach((a) => {
+        //TODO: also add details like user_profile and name
+        let user_name = attending_people_names.filter((e) => e.uid == a.uid)[0]
+            .name
+        let user_profile = attending_people_photo_url.filter(
+            (e) => e.uid == a.uid
+        )
+        user_profile =
+            user_profile.length == 0
+                ? { photo_url: false }
+                : {
+                      photo_url: `/getUserProfile/${user_profile[0].uid}`,
+                  }
+
+        if (!(subjects[a.subjectCode] && subjects[a.subjectCode].people))
+            subjects[a.subjectCode].people = []
+
+        subjects[a.subjectCode].people.push({
+            uid: a.uid,
+            name: user_name,
+            photo_url: user_profile.photo_url || false,
+            color: generateRandomColor(),
+        })
+    })
+}
+async function appendAttendingPeopleAndClassesAttendedByUserInSubjects(
+    subjects,
+    user,
+    subjectCodes
+) {
+    let upcomming_attending_people = await upcomming_attendance.find({
+        $and: [
+            {
+                subjectCode: { $in: subjectCodes },
+            },
+            { branch_id: user.branch_id },
+            { present: true },
+            { date: new Date().toDateString() },
+        ],
+    })
+    let upcomming_attending_people_uids = upcomming_attending_people.map(
+        (e) => {
+            return e.uid
+        }
+    )
+    let upcomming_attending_people_photo_url = await users_profile.find(
+        {
+            uid: { $in: upcomming_attending_people_uids },
+        },
+        "uid"
+    )
+    let upcomming_attending_people_names = await users.find({
+        uid: { $in: upcomming_attending_people_uids },
+    })
+    let upcomming_attended_classes = await upcomming_attendance.find({
+        $and: [
+            {
+                subjectCode: { $in: subjectCodes },
+            },
+            { branch_id: user.branch_id },
+            { date: new Date().toDateString() },
+            { uid: user.uid },
+        ],
+    })
+    //classes attending by the user
+    upcomming_attended_classes.forEach((a) => {
+        subjects[a.subjectCode].attending = true
+    })
+    //upcomming classes attending people
+    upcomming_attending_people.forEach((a) => {
+        //TODO: also add details like user_profile and name
+        let user_name = upcomming_attending_people_names.filter(
+            (e) => e.uid == a.uid
+        )[0].name
+        let user_profile = upcomming_attending_people_photo_url.filter(
+            (e) => e.uid == a.uid
+        )
+        user_profile =
+            user_profile.length == 0
+                ? { photo_url: false }
+                : {
+                      photo_url: `/getUserProfile/${user_profile[0].uid}`,
+                  }
+        if (
+            !(
+                subjects[a.subjectCode] &&
+                subjects[a.subjectCode].peopleAttending
+            )
+        )
+            subjects[a.subjectCode].peopleAttending = []
+
+        subjects[a.subjectCode].peopleAttending.push({
+            uid: a.uid,
+            color: generateRandomColor(),
+            name: user_name,
+            photo_url: user_profile.photo_url || false,
+        })
+    })
+}
+
 async function getBranchId(req, res, next) {
     try {
         let { uid } = req.query

@@ -415,7 +415,7 @@ function isEnded(start, end) {
     return !!((date > e) & (date > s))
 }
 async function getTimeTable() {
-    let day = new Date().getDay()
+    // let day = new Date().getDay()
     try {
         let { data } = await axios.get(`${api_url}/getTimetable`, {
             params: {
@@ -426,15 +426,15 @@ async function getTimeTable() {
         console.log(data)
         setTimetable(JSON.stringify(data))
         // console.log(JSON.parse(timetable()))
-        todayTimetable.value = JSON.parse(timetable()).timetable[day]
-        // todayTimetable.value = JSON.parse(timetable()).timetable[5]
+        // todayTimetable.value = JSON.parse(timetable()).timetable[day]
+        todayTimetable.value = JSON.parse(timetable()).timetable[5]
         subjects.value = JSON.parse(timetable()).subjects
         AppState.loading = false
         checkClasses()
     } catch (err) {
         if (timetable()) {
-            todayTimetable.value = JSON.parse(timetable()).timetable[day]
-            // todayTimetable.value = JSON.parse(timetable()).timetable[5]
+            // todayTimetable.value = JSON.parse(timetable()).timetable[day]
+            todayTimetable.value = JSON.parse(timetable()).timetable[5]
             subjects.value = JSON.parse(timetable()).subjects
             console.log(todayTimetable)
             AppState.loading = false
@@ -522,7 +522,8 @@ async function getUserDetails() {
 async function setObserver() {
     let elements = document.querySelectorAll(".appear_in")
     const options = {
-        threshold: 1,
+        // threshold: 1,
+
     }
     const appearOnScroll = new IntersectionObserver(function(
         entries,

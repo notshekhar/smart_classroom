@@ -24,11 +24,15 @@
                         {{ AppState.user.school }}
                         {{ AppState.user.branch }}
                     </div>
-                    <div class="group">
+                    <div class="group" v-if="AppState.user.group">
                         <span>Group:</span>{{ AppState.user.group }}
                     </div>
-                    <div class="mobile">{{ AppState.user.mobile }}</div>
-                    <div class="email">{{ AppState.user.email }}</div>
+                    <div class="mobile" v-if="AppState.user.mobile">
+                        {{ AppState.user.mobile }}
+                    </div>
+                    <div class="email" v-if="AppState.user.email">
+                        {{ AppState.user.email }}
+                    </div>
                 </div>
                 <div class="edit" @click="editProfile">
                     <i class="fas fa-pen"></i>
